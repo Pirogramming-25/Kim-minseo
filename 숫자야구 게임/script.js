@@ -44,7 +44,53 @@ function initGame(){
     submitButton.disabled = false
 }
 
+function getUserNumbers(){
+    const userNumbers = []
+
+    inputFields.forEach(function(input){
+        userNumbers.push(input.value)
+    })
+
+    return userNumbers
+}
+
+function hasEmptyInput(userNumbers){
+    return userNumbers.includes('')
+}
+
+function checkResult(userNumbers){
+    let strike = 0
+    let ball = 0
+
+    userNumbers.forEach(function(number, index){
+        const currentNumber = Number(number)
+
+        if(currentNumber === answer[index]){
+            strike++
+        }else if(answer.includes(currentNumber)){
+            ball++
+        }
+    })
+
+    return {
+        strike: strike,
+        ball: ball
+    }
+}
+
 function check_numbers(){
+    const userNumbers = getUserNumbers()
+
+    if(hasEmptyInput(userNumbers)){
+        clearInputs()
+        return
+    }
+
+    attempts--
+    updateAttempts()
+
+    checkResult(userNumbers)
+    clearInputs()
 }
 
 initGame()
