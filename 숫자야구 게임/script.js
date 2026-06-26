@@ -53,6 +53,12 @@ function updateAttempts(){
     attemptsText.textContent = attempts
 }
 
+function setInputDisabled(isDisabled){
+    inputFields.forEach(function(input){
+        input.disabled = isDisabled
+    })
+}
+
 function initGame(){
     answer = createAnswer()
     attempts = 9
@@ -62,6 +68,7 @@ function initGame(){
     results.innerHTML = ''
     gameResultImg.src = ''
     submitButton.disabled = false
+    setInputDisabled(false)
 }
 
 function getUserNumbers(){
@@ -130,6 +137,7 @@ function addResult(userNumbers, result){
 function finishGame(imageName){
     gameResultImg.src = imageName
     submitButton.disabled = true
+    setInputDisabled(true)
 }
 
 function check_numbers(){
