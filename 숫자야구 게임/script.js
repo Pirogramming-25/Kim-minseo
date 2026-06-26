@@ -78,6 +78,35 @@ function checkResult(userNumbers){
     }
 }
 
+function createResultHtml(userNumbers, result){
+    const userNumberText = userNumbers.join(' ')
+
+    if(result.strike === 0 && result.ball === 0){
+        return `
+            <div class="check-result">
+                <div class="left">${userNumberText}</div>
+                <div>:</div>
+                <div class="right"><span class="num-result out">O</span></div>
+            </div>
+        `
+    }
+
+    return `
+        <div class="check-result">
+            <div class="left">${userNumberText}</div>
+            <div>:</div>
+            <div class="right">
+                ${result.strike} <span class="num-result strike">S</span>
+                ${result.ball} <span class="num-result ball">B</span>
+            </div>
+        </div>
+    `
+}
+
+function addResult(userNumbers, result){
+    results.insertAdjacentHTML('beforeend', createResultHtml(userNumbers, result))
+}
+
 function check_numbers(){
     const userNumbers = getUserNumbers()
 
@@ -89,7 +118,9 @@ function check_numbers(){
     attempts--
     updateAttempts()
 
-    checkResult(userNumbers)
+    const result = checkResult(userNumbers)
+
+    addResult(userNumbers, result)
     clearInputs()
 }
 
