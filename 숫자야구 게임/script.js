@@ -107,6 +107,11 @@ function addResult(userNumbers, result){
     results.insertAdjacentHTML('beforeend', createResultHtml(userNumbers, result))
 }
 
+function finishGame(imageName){
+    gameResultImg.src = imageName
+    submitButton.disabled = true
+}
+
 function check_numbers(){
     const userNumbers = getUserNumbers()
 
@@ -122,6 +127,15 @@ function check_numbers(){
 
     addResult(userNumbers, result)
     clearInputs()
+
+    if(result.strike === 3){
+        finishGame('success.png')
+        return
+    }
+
+    if(attempts === 0){
+        finishGame('fail.png')
+    }
 }
 
 initGame()
