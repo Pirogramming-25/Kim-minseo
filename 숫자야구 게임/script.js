@@ -29,6 +29,16 @@ function clearInputs(){
     inputFields[0].focus()
 }
 
+function moveToNextInput(){
+    inputFields.forEach(function(input, index){
+        input.addEventListener('input', function(){
+            if(input.value !== '' && index < inputFields.length - 1){
+                inputFields[index + 1].focus()
+            }
+        })
+    })
+}
+
 function updateAttempts(){
     attemptsText.textContent = attempts
 }
@@ -139,3 +149,4 @@ function check_numbers(){
 }
 
 initGame()
+moveToNextInput()
