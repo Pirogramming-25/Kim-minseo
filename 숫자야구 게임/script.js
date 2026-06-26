@@ -29,11 +29,17 @@ function clearInputs(){
     inputFields[0].focus()
 }
 
-function moveToNextInput(){
+function handleInputMove(){
     inputFields.forEach(function(input, index){
         input.addEventListener('input', function(){
             if(input.value !== '' && index < inputFields.length - 1){
                 inputFields[index + 1].focus()
+            }
+        })
+
+        input.addEventListener('keydown', function(e){
+            if(e.key === 'Backspace' && input.value === '' && index > 0){
+                inputFields[index - 1].focus()
             }
         })
     })
@@ -149,4 +155,4 @@ function check_numbers(){
 }
 
 initGame()
-moveToNextInput()
+handleInputMove()
