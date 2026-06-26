@@ -83,19 +83,19 @@ function createResultHtml(userNumbers, result){
 
     if(result.strike === 0 && result.ball === 0){
         return `
-            <div class="check-result">
+            <div class="check-result" style="display: grid; grid-template-columns: 120px 20px 160px;">
                 <div class="left">${userNumberText}</div>
-                <div>:</div>
-                <div class="right"><span class="num-result out">O</span></div>
+                <div style="text-align: center;">:</div>
+                <div class="right" style="text-align: center;"><span class="num-result out">O</span></div>
             </div>
         `
     }
 
     return `
-        <div class="check-result">
+        <div class="check-result" style="display: grid; grid-template-columns: 120px 20px 160px;">
             <div class="left">${userNumberText}</div>
-            <div>:</div>
-            <div class="right">
+            <div style="text-align: center;">:</div>
+            <div class="right" style="text-align: center;">
                 ${result.strike} <span class="num-result strike">S</span>
                 ${result.ball} <span class="num-result ball">B</span>
             </div>
