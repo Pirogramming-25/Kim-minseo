@@ -39,6 +39,10 @@ body {
 
     border-radius: 10px;
 }
+#restart-button {
+    display: none;
+    margin: 10px auto 0;
+}
 .result-display {
     background-color: #eeeeee;
     padding: 20px;

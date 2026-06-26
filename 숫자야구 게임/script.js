@@ -6,6 +6,7 @@ const submitButton = document.querySelector('.submit-button')
 const attemptsText = document.querySelector('#attempts')
 const results = document.querySelector('#results')
 const gameResultImg = document.querySelector('#game-result-img')
+const restartButton = document.querySelector('#restart-button')
 
 function createAnswer(){
     const numbers = []
@@ -59,16 +60,24 @@ function setInputDisabled(isDisabled){
     })
 }
 
+function initRestartButton(){
+    restartButton.addEventListener('click', function(){
+        initGame()
+    })
+}
+
 function initGame(){
     answer = createAnswer()
     attempts = 9
 
+    setInputDisabled(false)
     clearInputs()
     updateAttempts()
     results.innerHTML = ''
     gameResultImg.src = ''
+    gameResultImg.style.display = 'none'
     submitButton.disabled = false
-    setInputDisabled(false)
+    restartButton.style.display = 'none'
 }
 
 function getUserNumbers(){
@@ -136,8 +145,10 @@ function addResult(userNumbers, result){
 
 function finishGame(imageName){
     gameResultImg.src = imageName
+    gameResultImg.style.display = 'block'
     submitButton.disabled = true
     setInputDisabled(true)
+    restartButton.style.display = 'block'
 }
 
 function check_numbers(){
@@ -166,5 +177,6 @@ function check_numbers(){
     }
 }
 
+initRestartButton()
 initGame()
 handleInputMove()
