@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import ReviewForm
@@ -6,16 +7,26 @@ from .models import Review
 
 def review_list(request):
     sort = request.GET.get("sort", "recent")
+    query = request.GET.get("q", "").strip()
     sort_options = {
         "recent": "-created_at",
         "rating": "-rating",
         "running_time": "running_time",
         "title": "title",
     }
-    reviews = Review.objects.all().order_by(sort_options.get(sort, "-created_at"))
+    reviews = Review.objects.all()
+    if query:
+        reviews = reviews.filter(
+            Q(title__icontains=query)
+            | Q(director__icontains=query)
+            | Q(actor__icontains=query)
+            | Q(genre__icontains=query)
+        )
+    reviews = reviews.order_by(sort_options.get(sort, "-created_at"))
     context = {
         "reviews": reviews,
         "selected_sort": sort,
+        "query": query,
     }
     return render(request, "reviews/review_list.html", context)
 
