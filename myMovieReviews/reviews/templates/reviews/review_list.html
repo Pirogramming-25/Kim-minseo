@@ -1,20 +1,32 @@
 {% extends "reviews/base.html" %}
 
 {% block content %}
-  {% if reviews %}
-    <section class="list-toolbar">
-      <div>
-        <p class="toolbar-label">정렬</p>
-        <div class="sort-links" aria-label="리뷰 정렬">
-          <a class="{% if selected_sort == 'recent' %}active{% endif %}" href="?sort=recent">최신순</a>
-          <a class="{% if selected_sort == 'rating' %}active{% endif %}" href="?sort=rating">별점순</a>
-          <a class="{% if selected_sort == 'running_time' %}active{% endif %}" href="?sort=running_time">러닝타임순</a>
-          <a class="{% if selected_sort == 'title' %}active{% endif %}" href="?sort=title">제목순</a>
-        </div>
+  {% if reviews or query %}
+    <section class="list-tools">
+      <div class="search-row">
+        <form class="review-search-form" method="get" action="{% url 'reviews:index' %}">
+          <input type="hidden" name="sort" value="{{ selected_sort }}">
+          <input type="search" name="q" value="{{ query }}" placeholder="영화 제목, 감독, 주연, 장르 검색" autocomplete="off" enterkeyhint="search">
+          <button class="search-button" type="submit">검색</button>
+        </form>
+        {% if query %}
+          <a class="reset-search-button" href="{% url 'reviews:index' %}?sort={{ selected_sort }}">검색 초기화</a>
+        {% endif %}
       </div>
-      <a class="primary-button accent-button" href="{% url 'reviews:create' %}">리뷰 작성</a>
-    </section>
 
+      <div class="list-toolbar">
+        <div class="sort-links" aria-label="리뷰 정렬">
+          <a class="{% if selected_sort == 'recent' %}active{% endif %}" href="?sort=recent{% if query %}&q={{ query|urlencode }}{% endif %}">최신순</a>
+          <a class="{% if selected_sort == 'rating' %}active{% endif %}" href="?sort=rating{% if query %}&q={{ query|urlencode }}{% endif %}">별점순</a>
+          <a class="{% if selected_sort == 'running_time' %}active{% endif %}" href="?sort=running_time{% if query %}&q={{ query|urlencode }}{% endif %}">러닝타임순</a>
+          <a class="{% if selected_sort == 'title' %}active{% endif %}" href="?sort=title{% if query %}&q={{ query|urlencode }}{% endif %}">제목순</a>
+        </div>
+        <a class="primary-button accent-button create-review-button" href="{% url 'reviews:create' %}">리뷰 작성</a>
+      </div>
+    </section>
+  {% endif %}
+
+  {% if reviews %}
     <section class="review-grid">
       {% for review in reviews %}
       <article class="review-card">
@@ -31,9 +43,17 @@
           <span>{{ review.genre }}</span>
           <span class="rating-text">{{ review.rating }}</span>
           <span>{{ review.running_time_display }}</span>
+          <span>{{ review.created_at|date:"Y.m.d" }}</span>
         </div>
       </article>
       {% endfor %}
+    </section>
+  {% elif query %}
+    <section class="empty-home">
+      <p class="empty-kicker">검색 결과</p>
+      <h1>일치하는 리뷰가 없습니다.</h1>
+      <p>다른 검색어로 다시 찾아보세요.</p>
+      <a class="primary-button accent-button" href="{% url 'reviews:index' %}">전체 리뷰 보기</a>
     </section>
   {% else %}
     <section class="empty-home">

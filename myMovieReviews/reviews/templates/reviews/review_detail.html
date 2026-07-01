@@ -46,6 +46,10 @@
         <dt>러닝타임</dt>
         <dd>{{ review.running_time_display }}</dd>
       </div>
+      <div>
+        <dt>작성일</dt>
+        <dd>{{ review.created_at|date:"Y.m.d" }}</dd>
+      </div>
     </dl>
   </section>
 
