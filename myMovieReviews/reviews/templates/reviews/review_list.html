@@ -1,0 +1,46 @@
+{% extends "reviews/base.html" %}
+
+{% block content %}
+  {% if reviews %}
+    <section class="list-toolbar">
+      <div>
+        <p class="toolbar-label">정렬</p>
+        <div class="sort-links" aria-label="리뷰 정렬">
+          <a class="{% if selected_sort == 'recent' %}active{% endif %}" href="?sort=recent">최신순</a>
+          <a class="{% if selected_sort == 'rating' %}active{% endif %}" href="?sort=rating">별점순</a>
+          <a class="{% if selected_sort == 'running_time' %}active{% endif %}" href="?sort=running_time">러닝타임순</a>
+          <a class="{% if selected_sort == 'title' %}active{% endif %}" href="?sort=title">제목순</a>
+        </div>
+      </div>
+      <a class="primary-button accent-button" href="{% url 'reviews:create' %}">리뷰 작성</a>
+    </section>
+
+    <section class="review-grid">
+      {% for review in reviews %}
+      <article class="review-card">
+        <a class="poster-thumb" href="{% url 'reviews:detail' review.pk %}">
+          {% if review.poster %}
+            <img src="{{ review.poster.url }}" alt="{{ review.title }} 포스터">
+          {% else %}
+            <span>No Image</span>
+          {% endif %}
+        </a>
+        <a class="review-title" href="{% url 'reviews:detail' review.pk %}">{{ review.title }}</a>
+        <div class="card-meta">
+          <span>{{ review.release_year }}년</span>
+          <span>{{ review.genre }}</span>
+          <span class="rating-text">{{ review.rating }}</span>
+          <span>{{ review.running_time_display }}</span>
+        </div>
+      </article>
+      {% endfor %}
+    </section>
+  {% else %}
+    <section class="empty-home">
+      <p class="empty-kicker">my Movie reviews</p>
+      <h1>아직 작성한 리뷰가 없습니다.</h1>
+      <p>처음 기록할 영화를 하나 추가해보세요.</p>
+      <a class="primary-button accent-button" href="{% url 'reviews:create' %}">리뷰 작성</a>
+    </section>
+  {% endif %}
+{% endblock %}

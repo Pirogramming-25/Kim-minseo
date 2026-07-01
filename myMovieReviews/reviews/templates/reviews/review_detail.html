@@ -1,0 +1,55 @@
+{% extends "reviews/base.html" %}
+
+{% block content %}
+  <section class="detail-heading">
+    <h1>{{ review.title }}</h1>
+    <div class="detail-actions">
+      <a class="secondary-button" href="{% url 'reviews:index' %}">목록</a>
+      <a class="secondary-button" href="{% url 'reviews:update' review.pk %}">수정</a>
+      <form action="{% url 'reviews:delete' review.pk %}" method="post">
+        {% csrf_token %}
+        <button class="danger-button" type="submit" onclick="return confirm('삭제한 리뷰는 되돌릴 수 없습니다. 정말 삭제하시겠습니까?');">삭제</button>
+      </form>
+    </div>
+  </section>
+
+  <section class="detail-panel">
+    <div class="detail-poster">
+      {% if review.poster %}
+        <img src="{{ review.poster.url }}" alt="{{ review.title }} 포스터">
+      {% else %}
+        <span>No Image</span>
+      {% endif %}
+    </div>
+    <dl>
+      <div>
+        <dt>개봉년도</dt>
+        <dd>{{ review.release_year }}년</dd>
+      </div>
+      <div>
+        <dt>감독</dt>
+        <dd>{{ review.director }}</dd>
+      </div>
+      <div>
+        <dt>주연</dt>
+        <dd>{{ review.actor }}</dd>
+      </div>
+      <div>
+        <dt>장르</dt>
+        <dd>{{ review.genre }}</dd>
+      </div>
+      <div>
+        <dt>별점</dt>
+        <dd>{{ review.rating }}</dd>
+      </div>
+      <div>
+        <dt>러닝타임</dt>
+        <dd>{{ review.running_time_display }}</dd>
+      </div>
+    </dl>
+  </section>
+
+  <section class="review-body">
+    {{ review.review|linebreaks }}
+  </section>
+{% endblock %}
