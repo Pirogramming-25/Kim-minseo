@@ -1,0 +1,33 @@
+{% extends "reviews/base.html" %}
+{% load static %}
+
+{% block content %}
+  <section class="form-panel">
+    <h1>
+      {% if is_update %}
+        <span>Movie</span> review 수정
+      {% else %}
+        <span>Movie</span> review 작성
+      {% endif %}
+    </h1>
+    <form method="post" enctype="multipart/form-data" novalidate>
+      {% csrf_token %}
+      {% for field in form %}
+        <div class="form-row field-{{ field.name }}">
+          <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
+          <div class="field-box">
+            {{ field }}
+            {% for error in field.errors %}
+              <p class="error">{{ error }}</p>
+            {% endfor %}
+          </div>
+        </div>
+      {% endfor %}
+      <div class="form-actions">
+        <a class="secondary-button" href="{% url 'reviews:index' %}">취소</a>
+        <button class="save-button" type="submit">Save</button>
+      </div>
+    </form>
+  </section>
+  <script src="{% static 'js/form.js' %}"></script>
+{% endblock %}
