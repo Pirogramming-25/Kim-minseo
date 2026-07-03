@@ -1,0 +1,31 @@
+{% extends "ideas/base.html" %}
+
+{% block content %}
+  <section class="auth-panel">
+    <div class="form-head">
+      <p class="eyebrow">Login</p>
+      <h1>로그인</h1>
+    </div>
+    <form method="post" class="auth-form">
+      {% csrf_token %}
+      {% for field in form %}
+        <div class="auth-row">
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+          {% for error in field.errors %}
+            <p class="error">{{ error }}</p>
+          {% endfor %}
+        </div>
+      {% endfor %}
+      {% if form.non_field_errors %}
+        {% for error in form.non_field_errors %}
+          <p class="error">{{ error }}</p>
+        {% endfor %}
+      {% endif %}
+      <div class="form-actions">
+        <a class="secondary-button" href="{% url 'accounts:signup' %}">회원가입</a>
+        <button class="primary-button" type="submit">로그인</button>
+      </div>
+    </form>
+  </section>
+{% endblock %}
