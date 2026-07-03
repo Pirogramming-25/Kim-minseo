@@ -1,0 +1,48 @@
+{% extends "ideas/base.html" %}
+
+{% block content %}
+  <section class="detail-head">
+    <div>
+      <p class="eyebrow">DevTool Detail</p>
+      <h1>{{ devtool.name }}</h1>
+    </div>
+    <div class="action-row">
+      <a class="secondary-button" href="{% url 'ideas:devtool_list' %}">목록</a>
+      <a class="secondary-button" href="{% url 'ideas:devtool_update' devtool.pk %}">수정</a>
+      <form action="{% url 'ideas:devtool_delete' devtool.pk %}" method="post">
+        {% csrf_token %}
+        <button class="danger-button" type="submit" onclick="return confirm('개발툴을 삭제하시겠습니까?');">삭제</button>
+      </form>
+    </div>
+  </section>
+
+  <section class="tool-detail">
+    <dl>
+      <div>
+        <dt>종류</dt>
+        <dd>{{ devtool.kind }}</dd>
+      </div>
+      <div>
+        <dt>등록일</dt>
+        <dd>{{ devtool.created_at|date:"Y.m.d H:i" }}</dd>
+      </div>
+    </dl>
+    <div class="content-box">{{ devtool.content|linebreaks }}</div>
+  </section>
+
+  <section class="related-section">
+    <h2>이 개발툴을 사용하는 아이디어</h2>
+    {% if devtool.ideas.all %}
+      <div class="related-list">
+        {% for idea in devtool.ideas.all %}
+          <a href="{% url 'ideas:idea_detail' idea.pk %}">
+            <strong>{{ idea.title }}</strong>
+            <span>관심도 {{ idea.interest }}</span>
+          </a>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="muted">아직 연결된 아이디어가 없습니다.</p>
+    {% endif %}
+  </section>
+{% endblock %}
