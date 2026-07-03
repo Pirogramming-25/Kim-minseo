@@ -22,7 +22,13 @@
         {% for star in starred_ideas %}
           <tr>
             <td><a class="text-link strong" href="{% url 'ideas:idea_detail' star.idea.pk %}">{{ star.idea.title }}</a></td>
-            <td>{% if star.idea.devtool %}{{ star.idea.devtool.name }}{% else %}-{% endif %}</td>
+            <td>
+              {% for devtool in star.idea.devtools.all %}
+                {{ devtool.name }}{% if not forloop.last %}, {% endif %}
+              {% empty %}
+                -
+              {% endfor %}
+            </td>
             <td>{{ star.created_at|date:"Y.m.d" }}</td>
           </tr>
         {% empty %}

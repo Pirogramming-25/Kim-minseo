@@ -34,12 +34,10 @@ class Idea(models.Model):
     image = models.ImageField("이미지", upload_to="ideas/", blank=True)
     content = models.TextField("내용")
     interest = models.PositiveIntegerField("관심도", default=0, validators=[MinValueValidator(0)])
-    devtool = models.ForeignKey(
+    devtools = models.ManyToManyField(
         DevTool,
         verbose_name="개발툴",
         related_name="ideas",
-        null=True,
-        on_delete=models.SET_NULL,
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

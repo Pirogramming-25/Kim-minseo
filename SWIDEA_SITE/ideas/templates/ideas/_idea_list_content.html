@@ -64,8 +64,10 @@
               </div>
               <p class="card-desc">{{ idea.content|truncatechars:108 }}</p>
               <div class="meta-row">
-                {% if idea.devtool %}
-                  <a href="{% url 'ideas:devtool_detail' idea.devtool.pk %}">{{ idea.devtool.name }}</a>
+                {% if idea.devtools.all %}
+                  {% for devtool in idea.devtools.all %}
+                    <a href="{% url 'ideas:devtool_detail' devtool.pk %}">{{ devtool.name }}</a>
+                  {% endfor %}
                 {% else %}
                   <span>개발툴 없음</span>
                 {% endif %}

@@ -26,16 +26,17 @@ class IdeaForm(forms.ModelForm):
 
     class Meta:
         model = Idea
-        fields = ["title", "image", "content", "interest", "devtool"]
+        fields = ["title", "image", "content", "interest", "devtools"]
         widgets = {
             "title": forms.TextInput(attrs={"placeholder": "예: AI 여행 플래너"}),
             "image": forms.FileInput(attrs={"accept": "image/*"}),
             "content": forms.Textarea(attrs={"rows": 8, "placeholder": "아이디어 내용을 적어주세요."}),
+            "devtools": forms.CheckboxSelectMultiple(),
         }
         error_messages = {
             "title": {"required": "제목을 입력해주세요."},
             "content": {"required": "내용을 입력해주세요."},
-            "devtool": {"required": "개발툴을 선택해주세요."},
+            "devtools": {"required": "개발툴을 하나 이상 선택해주세요."},
         }
 
     def save(self, commit=True):

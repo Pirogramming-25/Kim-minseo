@@ -22,7 +22,8 @@ def signup(request):
 def mypage(request):
     starred_ideas = (
         IdeaStar.objects.filter(user=request.user)
-        .select_related("idea", "idea__devtool")
+        .select_related("idea")
+        .prefetch_related("idea__devtools")
         .order_by("-created_at")
     )
     return render(request, "accounts/mypage.html", {"starred_ideas": starred_ideas})

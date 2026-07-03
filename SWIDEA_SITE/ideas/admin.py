@@ -5,9 +5,14 @@ from .models import DevTool, Idea, IdeaStar
 
 @admin.register(Idea)
 class IdeaAdmin(admin.ModelAdmin):
-    list_display = ("title", "author", "devtool", "interest", "created_at")
-    list_filter = ("devtool", "author")
-    search_fields = ("title", "content", "devtool__name", "author__username")
+    list_display = ("title", "author", "devtool_names", "interest", "created_at")
+    list_filter = ("devtools", "author")
+    search_fields = ("title", "content", "devtools__name", "author__username")
+
+    def devtool_names(self, obj):
+        return ", ".join(devtool.name for devtool in obj.devtools.all())
+
+    devtool_names.short_description = "개발툴"
 
 
 @admin.register(DevTool)

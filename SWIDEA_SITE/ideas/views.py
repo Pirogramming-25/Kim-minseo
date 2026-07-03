@@ -50,7 +50,7 @@ def idea_list(request):
         "interest": "-interest",
         "star": "-star_count",
     }
-    ideas = Idea.objects.select_related("author", "devtool").annotate(star_count=Count("stars"))
+    ideas = Idea.objects.select_related("author").prefetch_related("devtools").annotate(star_count=Count("stars", distinct=True))
 
     if show_mine:
         ideas = ideas.filter(author=request.user)
@@ -62,9 +62,9 @@ def idea_list(request):
         ideas = ideas.filter(
             Q(title__icontains=query)
             | Q(content__icontains=query)
-            | Q(devtool__name__icontains=query)
-            | Q(devtool__kind__icontains=query)
-        )
+            | Q(devtools__name__icontains=query)
+            | Q(devtools__kind__icontains=query)
+        ).distinct()
 
     ideas = ideas.order_by(sort_options.get(sort, "-created_at"), "title")
     paginator = Paginator(ideas, 4)
@@ -91,7 +91,7 @@ def idea_list(request):
 
 def idea_detail(request, pk):
     idea = get_object_or_404(
-        Idea.objects.select_related("author", "devtool").annotate(star_count=Count("stars")),
+        Idea.objects.select_related("author").prefetch_related("devtools").annotate(star_count=Count("stars", distinct=True)),
         pk=pk,
     )
     previous_idea = (
@@ -131,6 +131,7 @@ def idea_create(request):
             idea = form.save(commit=False)
             idea.author = request.user
             idea.save()
+            form.save_m2m()
             return redirect(idea.get_absolute_url())
     else:
         form = IdeaForm()
@@ -190,7 +191,7 @@ def idea_interest_change(request, pk):
 
 def devtool_list(request):
     query = request.GET.get("q", "").strip()
-    devtools = DevTool.objects.annotate(idea_count=Count("ideas"))
+    devtools = DevTool.objects.annotate(idea_count=Count("ideas", distinct=True))
     if query:
         devtools = devtools.filter(
             Q(name__icontains=query) | Q(kind__icontains=query) | Q(content__icontains=query)
