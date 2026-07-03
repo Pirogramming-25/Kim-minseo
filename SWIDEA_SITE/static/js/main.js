@@ -11,6 +11,12 @@ function getCookie(name) {
 
 const csrfToken = getCookie("csrftoken");
 
+function syncDevtoolChoices(root = document) {
+  root.querySelectorAll(".field-devtools input[type='checkbox']").forEach((input) => {
+    input.closest("label")?.classList.toggle("is-selected", input.checked);
+  });
+}
+
 async function loadIdeaSearchResults(url, pushState = true) {
   const response = await fetch(url, {
     headers: { "X-Requested-With": "XMLHttpRequest" },
@@ -89,6 +95,11 @@ document.addEventListener("click", async (event) => {
 
 document.addEventListener("change", (event) => {
   const input = event.target;
+  if (input.matches(".field-devtools input[type='checkbox']")) {
+    syncDevtoolChoices(input.closest(".field-devtools") || document);
+    return;
+  }
+
   if (input.type !== "file" || input.name !== "image") return;
 
   const preview = input.closest(".field-box")?.querySelector("[data-image-preview]");
@@ -103,6 +114,8 @@ document.addEventListener("change", (event) => {
   preview.classList.remove("is-empty");
   preview.innerHTML = `<img src="${imageUrl}" alt="선택한 이미지 미리보기">`;
 });
+
+syncDevtoolChoices();
 
 document.addEventListener("change", (event) => {
   const input = event.target;

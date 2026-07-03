@@ -45,8 +45,8 @@
               {% endif %}
             {% elif field.name == "interest" %}
               <p class="help-text">아이디어에 얼마나 관심이 있는지 숫자로 적어주세요. 숫자가 높을수록 관심도가 높은 아이디어입니다.</p>
-            {% elif field.name == "devtool" %}
-              <p class="help-text">필요한 개발툴이 없다면 <a class="inline-link" href="{% url 'ideas:devtool_create' %}">개발툴 등록</a>에서 먼저 추가할 수 있습니다.</p>
+            {% elif field.name == "devtools" %}
+              <p class="help-text">사용할 개발툴을 하나 이상 선택해주세요. 필요한 개발툴이 없다면 <a class="inline-link" href="{% url 'ideas:devtool_create' %}">개발툴 등록</a>에서 먼저 추가할 수 있습니다.</p>
             {% endif %}
             {% for error in field.errors %}
               <p class="error">{{ error }}</p>
