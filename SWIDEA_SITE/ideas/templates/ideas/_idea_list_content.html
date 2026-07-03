@@ -1,0 +1,121 @@
+<div data-idea-page-content>
+  <section class="toolbar">
+    <form class="search-form" method="get" action="{% url 'ideas:idea_list' %}" data-ajax-search>
+      <input type="hidden" name="sort" value="{{ selected_sort }}">
+      {% if show_mine %}<input type="hidden" name="mine" value="1">{% endif %}
+      {% if show_starred %}<input type="hidden" name="starred" value="1">{% endif %}
+      <input type="search" name="q" value="{{ query }}" placeholder="제목, 내용, 개발툴 검색" autocomplete="off">
+      <button type="submit">검색</button>
+    </form>
+    <div class="toolbar-meta">
+      <span>총 {{ page_obj.paginator.count }}개</span>
+      {% if query %}
+        <a href="{% url 'ideas:idea_list' %}?sort={{ selected_sort }}{% if show_mine %}&mine=1{% endif %}{% if show_starred %}&starred=1{% endif %}">검색 초기화</a>
+      {% endif %}
+    </div>
+    <div class="filter-bar" aria-label="아이디어 필터">
+      <div class="filter-group">
+        <span class="filter-label">정렬</span>
+        <a class="filter-chip {% if selected_sort == 'latest' %}active{% endif %}" href="?sort=latest{% if show_mine %}&mine=1{% endif %}{% if show_starred %}&starred=1{% endif %}{% if query %}&q={{ query|urlencode }}{% endif %}">최신</a>
+        <a class="filter-chip {% if selected_sort == 'oldest' %}active{% endif %}" href="?sort=oldest{% if show_mine %}&mine=1{% endif %}{% if show_starred %}&starred=1{% endif %}{% if query %}&q={{ query|urlencode }}{% endif %}">등록</a>
+        <a class="filter-chip {% if selected_sort == 'title' %}active{% endif %}" href="?sort=title{% if show_mine %}&mine=1{% endif %}{% if show_starred %}&starred=1{% endif %}{% if query %}&q={{ query|urlencode }}{% endif %}">이름</a>
+        <a class="filter-chip {% if selected_sort == 'interest' %}active{% endif %}" href="?sort=interest{% if show_mine %}&mine=1{% endif %}{% if show_starred %}&starred=1{% endif %}{% if query %}&q={{ query|urlencode }}{% endif %}">관심도</a>
+        <a class="filter-chip {% if selected_sort == 'star' %}active{% endif %}" href="?sort=star{% if show_mine %}&mine=1{% endif %}{% if show_starred %}&starred=1{% endif %}{% if query %}&q={{ query|urlencode }}{% endif %}">찜 많은순</a>
+      </div>
+
+      <div class="filter-group">
+        <span class="filter-label">보기</span>
+        <a class="filter-chip {% if not show_mine and not show_starred %}active{% endif %}" href="?sort={{ selected_sort }}{% if query %}&q={{ query|urlencode }}{% endif %}">전체</a>
+        {% if request.user.is_authenticated %}
+          <a class="filter-chip {% if show_mine %}active{% endif %}" href="?sort={{ selected_sort }}&mine=1{% if query %}&q={{ query|urlencode }}{% endif %}">내 아이디어</a>
+          <a class="filter-chip {% if show_starred %}active{% endif %}" href="?sort={{ selected_sort }}&starred=1{% if query %}&q={{ query|urlencode }}{% endif %}">찜한 아이디어</a>
+        {% else %}
+          <a class="filter-chip login" href="{% url 'accounts:login' %}?next={% url 'ideas:idea_list' %}">로그인 후 보기</a>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+
+  <div id="idea-results" data-idea-results>
+    {% if ideas %}
+      <section class="idea-list">
+        {% for idea in ideas %}
+          <article class="idea-row">
+            <div class="thumb-wrap">
+              <a class="thumb" href="{% url 'ideas:idea_detail' idea.pk %}{% if list_querystring %}?next={{ request.get_full_path|urlencode }}{% endif %}">
+                {% if idea.image %}
+                  <img src="{{ idea.image.url }}" alt="{{ idea.title }} 이미지">
+                {% else %}
+                  <span>No Image</span>
+                {% endif %}
+              </a>
+              <button
+                class="star-button {% if idea.pk in starred_ids %}active{% endif %}"
+                type="button"
+                data-star-url="{% url 'ideas:idea_star_toggle' idea.pk %}"
+                aria-label="찜하기"
+              >★</button>
+            </div>
+
+            <div class="idea-main">
+              <div class="idea-title-line">
+                <a class="card-title" href="{% url 'ideas:idea_detail' idea.pk %}{% if list_querystring %}?next={{ request.get_full_path|urlencode }}{% endif %}">{{ idea.title }}</a>
+                <span class="date-chip">{{ idea.created_at|date:"Y.m.d" }}</span>
+              </div>
+              <p class="card-desc">{{ idea.content|truncatechars:108 }}</p>
+              <div class="meta-row">
+                {% if idea.devtool %}
+                  <a href="{% url 'ideas:devtool_detail' idea.devtool.pk %}">{{ idea.devtool.name }}</a>
+                {% else %}
+                  <span>개발툴 없음</span>
+                {% endif %}
+                <span class="author-chip">작성자 {% if idea.author %}{{ idea.author.username }}{% else %}없음{% endif %}</span>
+                <span>찜 <b data-star-count>{{ idea.star_count }}</b></span>
+              </div>
+            </div>
+
+            <div class="idea-side">
+              <span class="side-label">관심도</span>
+              <div class="interest-control" data-interest-wrap>
+                <button type="button" data-interest-url="{% url 'ideas:idea_interest_change' idea.pk %}" data-amount="-1">-</button>
+                <strong data-interest-value>{{ idea.interest }}</strong>
+                <button type="button" data-interest-url="{% url 'ideas:idea_interest_change' idea.pk %}" data-amount="1">+</button>
+              </div>
+              <a class="detail-link" href="{% url 'ideas:idea_detail' idea.pk %}{% if list_querystring %}?next={{ request.get_full_path|urlencode }}{% endif %}">상세보기</a>
+            </div>
+          </article>
+        {% endfor %}
+      </section>
+
+      {% if page_obj.paginator.num_pages > 1 %}
+        <nav class="pagination" aria-label="페이지네이션">
+          {% if page_obj.has_previous %}
+            <a class="page-arrow" href="?page={{ page_obj.previous_page_number }}&sort={{ selected_sort }}{% if show_mine %}&mine=1{% endif %}{% if show_starred %}&starred=1{% endif %}{% if query %}&q={{ query|urlencode }}{% endif %}" aria-label="이전 페이지">&lt;</a>
+          {% else %}
+            <span class="page-arrow disabled" aria-label="이전 페이지 없음">&lt;</span>
+          {% endif %}
+
+          {% for page_number in page_obj.paginator.page_range %}
+            {% if page_number == page_obj.number %}
+              <span class="page-number active">{{ page_number }}</span>
+            {% else %}
+              <a class="page-number" href="?page={{ page_number }}&sort={{ selected_sort }}{% if show_mine %}&mine=1{% endif %}{% if show_starred %}&starred=1{% endif %}{% if query %}&q={{ query|urlencode }}{% endif %}">{{ page_number }}</a>
+            {% endif %}
+          {% endfor %}
+
+          {% if page_obj.has_next %}
+            <a class="page-arrow" href="?page={{ page_obj.next_page_number }}&sort={{ selected_sort }}{% if show_mine %}&mine=1{% endif %}{% if show_starred %}&starred=1{% endif %}{% if query %}&q={{ query|urlencode }}{% endif %}" aria-label="다음 페이지">&gt;</a>
+          {% else %}
+            <span class="page-arrow disabled" aria-label="다음 페이지 없음">&gt;</span>
+          {% endif %}
+        </nav>
+      {% endif %}
+    {% else %}
+      <section class="empty-state">
+        <h2>{% if query %}검색 결과가 없습니다.{% else %}아직 등록된 아이디어가 없습니다.{% endif %}</h2>
+        <p>새 아이디어와 개발툴을 등록해서 아카이브를 채워보세요.</p>
+        <a class="primary-button" href="{% url 'ideas:idea_create' %}">아이디어 등록</a>
+      </section>
+    {% endif %}
+  </div>
+</div>

@@ -71,9 +71,11 @@ def idea_list(request):
     page_obj = paginator.get_page(request.GET.get("page"))
     starred_ids = _starred_ids(request)
 
+    is_ajax = request.headers.get("x-requested-with") == "XMLHttpRequest"
+    template_name = "ideas/_idea_list_content.html" if is_ajax else "ideas/idea_list.html"
     return render(
         request,
-        "ideas/idea_list.html",
+        template_name,
         {
             "page_obj": page_obj,
             "ideas": page_obj.object_list,

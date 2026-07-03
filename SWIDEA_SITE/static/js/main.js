@@ -11,6 +11,38 @@ function getCookie(name) {
 
 const csrfToken = getCookie("csrftoken");
 
+async function loadIdeaSearchResults(url, pushState = true) {
+  const response = await fetch(url, {
+    headers: { "X-Requested-With": "XMLHttpRequest" },
+  });
+  if (!response.ok) return;
+
+  const html = await response.text();
+  const template = document.createElement("template");
+  template.innerHTML = html.trim();
+  const nextContent = template.content.querySelector("[data-idea-page-content]");
+  const currentContent = document.querySelector("[data-idea-page-content]");
+
+  if (nextContent && currentContent) currentContent.replaceWith(nextContent);
+  if (pushState) window.history.pushState({}, "", url);
+}
+
+document.addEventListener("submit", (event) => {
+  const form = event.target.closest("[data-ajax-search]");
+  if (!form) return;
+
+  event.preventDefault();
+  const params = new URLSearchParams(new FormData(form));
+  const url = `${form.action}?${params.toString()}`;
+  loadIdeaSearchResults(url);
+});
+
+window.addEventListener("popstate", () => {
+  if (document.querySelector("[data-ajax-search]")) {
+    loadIdeaSearchResults(window.location.href, false);
+  }
+});
+
 document.addEventListener("click", async (event) => {
   const starButton = event.target.closest("[data-star-url]");
   if (starButton) {
