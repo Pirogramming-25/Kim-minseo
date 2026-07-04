@@ -1,0 +1,34 @@
+{% extends "ideas/base.html" %}
+
+{% block content %}
+  <section class="auth-panel">
+    <div class="form-head">
+      <p class="eyebrow">Signup</p>
+      <h1>회원가입</h1>
+      <p class="auth-copy">계정을 만들면 내 찜 목록과 마이페이지를 사용할 수 있습니다.</p>
+    </div>
+    <div class="signup-guide">
+      <strong>가입 전 확인</strong>
+      <span>아이디와 비밀번호만으로 간단히 시작할 수 있어요.</span>
+    </div>
+    <form method="post" class="auth-form">
+      {% csrf_token %}
+      {% for field in form %}
+        <div class="auth-row">
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+          {% if field.help_text %}
+            <div class="auth-help">{{ field.help_text }}</div>
+          {% endif %}
+          {% for error in field.errors %}
+            <p class="error">{{ error }}</p>
+          {% endfor %}
+        </div>
+      {% endfor %}
+      <div class="form-actions">
+        <a class="secondary-button" href="{% url 'accounts:login' %}">로그인</a>
+        <button class="primary-button" type="submit">가입하기</button>
+      </div>
+    </form>
+  </section>
+{% endblock %}

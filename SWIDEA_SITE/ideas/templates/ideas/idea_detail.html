@@ -1,0 +1,91 @@
+{% extends "ideas/base.html" %}
+
+{% block content %}
+  <section class="detail-head">
+    <div>
+      <p class="eyebrow">Idea Detail</p>
+      <h1>{{ idea.title }}</h1>
+    </div>
+    <div class="action-row">
+      <a class="secondary-button" href="{% if back_url %}{{ back_url }}{% else %}{% url 'ideas:idea_list' %}{% endif %}">목록</a>
+      {% if can_edit %}
+        <a class="secondary-button" href="{% url 'ideas:idea_update' idea.pk %}">수정</a>
+        <form action="{% url 'ideas:idea_delete' idea.pk %}" method="post">
+          {% csrf_token %}
+          <button class="danger-button" type="submit" onclick="return confirm('아이디어를 삭제하시겠습니까?');">삭제</button>
+        </form>
+      {% endif %}
+    </div>
+  </section>
+
+  <section class="detail-layout">
+    <div class="detail-image">
+      {% if idea.image %}
+        <img src="{{ idea.image.url }}" alt="{{ idea.title }} 이미지">
+      {% else %}
+        <span>No Image</span>
+      {% endif %}
+      <button
+        class="star-button detail-star {% if is_starred %}active{% endif %}"
+        type="button"
+        data-star-url="{% url 'ideas:idea_star_toggle' idea.pk %}"
+        aria-label="찜하기"
+      >★</button>
+    </div>
+    <div class="detail-info">
+      <dl>
+        <div>
+          <dt>작성자</dt>
+          <dd>{% if idea.author %}{{ idea.author.username }}{% else %}작성자 없음{% endif %}</dd>
+        </div>
+        <div>
+          <dt>개발툴</dt>
+          <dd>
+            {% if idea.devtools.all %}
+              {% for devtool in idea.devtools.all %}
+                <a class="text-link" href="{% url 'ideas:devtool_detail' devtool.pk %}">{{ devtool.name }}</a>{% if not forloop.last %}, {% endif %}
+              {% endfor %}
+            {% else %}
+              개발툴 없음
+            {% endif %}
+          </dd>
+        </div>
+        <div>
+          <dt>관심도</dt>
+          <dd class="interest-control inline" data-interest-wrap>
+            <button type="button" data-interest-url="{% url 'ideas:idea_interest_change' idea.pk %}" data-amount="-1">-</button>
+            <strong data-interest-value>{{ idea.interest }}</strong>
+            <button type="button" data-interest-url="{% url 'ideas:idea_interest_change' idea.pk %}" data-amount="1">+</button>
+          </dd>
+        </div>
+        <div>
+          <dt>찜</dt>
+          <dd><b data-star-count>{{ idea.star_count }}</b>개</dd>
+        </div>
+        <div>
+          <dt>등록일</dt>
+          <dd>{{ idea.created_at|date:"Y.m.d H:i" }}</dd>
+        </div>
+        <div>
+          <dt>수정일</dt>
+          <dd>{{ idea.updated_at|date:"Y.m.d H:i" }}</dd>
+        </div>
+      </dl>
+      <div class="content-box">{{ idea.content|linebreaks }}</div>
+    </div>
+  </section>
+
+  <nav class="detail-nav" aria-label="아이디어 이전 다음 이동">
+    {% if previous_idea %}
+      <a class="detail-arrow" href="{% url 'ideas:idea_detail' previous_idea.pk %}" aria-label="이전 아이디어">‹</a>
+    {% else %}
+      <span class="detail-arrow is-disabled" aria-label="이전 아이디어 없음">‹</span>
+    {% endif %}
+
+    {% if next_idea %}
+      <a class="detail-arrow" href="{% url 'ideas:idea_detail' next_idea.pk %}" aria-label="다음 아이디어">›</a>
+    {% else %}
+      <span class="detail-arrow is-disabled" aria-label="다음 아이디어 없음">›</span>
+    {% endif %}
+  </nav>
+{% endblock %}

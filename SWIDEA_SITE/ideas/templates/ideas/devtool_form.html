@@ -1,0 +1,28 @@
+{% extends "ideas/base.html" %}
+
+{% block content %}
+  <section class="form-panel">
+    <div class="form-head">
+      <p class="eyebrow">DevTool Form</p>
+      <h1>{% if is_update %}개발툴 수정{% else %}개발툴 등록{% endif %}</h1>
+    </div>
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {% for field in form %}
+        <div class="form-row">
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          <div class="field-box">
+            {{ field }}
+            {% for error in field.errors %}
+              <p class="error">{{ error }}</p>
+            {% endfor %}
+          </div>
+        </div>
+      {% endfor %}
+      <div class="form-actions">
+        <a class="secondary-button" href="{% if devtool %}{% url 'ideas:devtool_detail' devtool.pk %}{% else %}{% url 'ideas:devtool_list' %}{% endif %}">취소</a>
+        <button class="primary-button" type="submit">저장</button>
+      </div>
+    </form>
+  </section>
+{% endblock %}

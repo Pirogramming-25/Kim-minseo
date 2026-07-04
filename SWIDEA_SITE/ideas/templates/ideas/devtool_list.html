@@ -1,0 +1,49 @@
+{% extends "ideas/base.html" %}
+
+{% block content %}
+  <section class="page-head">
+    <div>
+      <p class="eyebrow">DevTool Management</p>
+      <h1>개발툴 관리</h1>
+    </div>
+    <a class="primary-button" href="{% url 'ideas:devtool_create' %}">개발툴 등록</a>
+  </section>
+
+  <section class="toolbar">
+    <form class="search-form" method="get" action="{% url 'ideas:devtool_list' %}">
+      <input type="search" name="q" value="{{ query }}" placeholder="이름, 종류, 설명 검색" autocomplete="off">
+      <button type="submit">검색</button>
+    </form>
+  </section>
+
+  {% if devtools %}
+    <section class="table-panel">
+      <table>
+        <thead>
+          <tr>
+            <th>이름</th>
+            <th>종류</th>
+            <th>사용 아이디어</th>
+            <th>등록일</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for devtool in devtools %}
+            <tr>
+              <td><a class="text-link strong" href="{% url 'ideas:devtool_detail' devtool.pk %}">{{ devtool.name }}</a></td>
+              <td>{{ devtool.kind }}</td>
+              <td>{{ devtool.idea_count }}</td>
+              <td>{{ devtool.created_at|date:"Y.m.d" }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </section>
+  {% else %}
+    <section class="empty-state">
+      <h2>{% if query %}검색 결과가 없습니다.{% else %}아직 등록된 개발툴이 없습니다.{% endif %}</h2>
+      <p>아이디어에서 선택할 개발툴을 먼저 등록해보세요.</p>
+      <a class="primary-button" href="{% url 'ideas:devtool_create' %}">개발툴 등록</a>
+    </section>
+  {% endif %}
+{% endblock %}

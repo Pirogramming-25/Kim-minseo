@@ -1,0 +1,42 @@
+{% extends "ideas/base.html" %}
+
+{% block content %}
+  <section class="page-head">
+    <div>
+      <p class="eyebrow">My Page</p>
+      <h1>{{ request.user.username }}님의 마이페이지</h1>
+      <p class="page-copy">내가 찜한 아이디어를 모아서 확인할 수 있습니다.</p>
+    </div>
+  </section>
+
+  <section class="table-panel">
+    <table>
+      <thead>
+        <tr>
+          <th>아이디어</th>
+          <th>개발툴</th>
+          <th>찜한 날짜</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for star in starred_ideas %}
+          <tr>
+            <td><a class="text-link strong" href="{% url 'ideas:idea_detail' star.idea.pk %}">{{ star.idea.title }}</a></td>
+            <td>
+              {% for devtool in star.idea.devtools.all %}
+                {{ devtool.name }}{% if not forloop.last %}, {% endif %}
+              {% empty %}
+                -
+              {% endfor %}
+            </td>
+            <td>{{ star.created_at|date:"Y.m.d" }}</td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="3">아직 찜한 아이디어가 없습니다.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+{% endblock %}

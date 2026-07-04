@@ -1,0 +1,14 @@
+{% extends "ideas/base.html" %}
+
+{% block content %}
+  <section class="page-head">
+    <div>
+      <p class="eyebrow">Idea Management</p>
+      <h1>아이디어 관리</h1>
+      <p class="page-copy">떠오른 아이디어를 빠르게 훑고, 관심도와 찜으로 먼저 볼 아이디어를 정리하세요.</p>
+    </div>
+    <a class="primary-button" href="{% url 'ideas:idea_create' %}">아이디어 등록</a>
+  </section>
+
+  {% include "ideas/_idea_list_content.html" %}
+{% endblock %}
