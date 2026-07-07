@@ -1,0 +1,50 @@
+{% extends "instagram/base.html" %}
+
+{% block content %}
+<div class="app-shell">
+    {% include "instagram/components/_sidebar.html" %}
+
+    <main class="utility-layout">
+        <section class="post-form-panel">
+            <header class="post-form-header">
+                <h1>{{ form_title }}</h1>
+            </header>
+            <form id="post-form" class="post-form">
+                <div class="post-upload-area">
+                    <div class="post-upload-preview">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                            <path d="M21 16 16 11 5 21"></path>
+                        </svg>
+                        <span>사진 미리보기</span>
+                    </div>
+                    <label class="file-button">
+                        사진 선택
+                        <input type="file" name="image" accept="image/*">
+                    </label>
+                </div>
+
+                <div class="post-compose-area">
+                    <div class="compose-author">
+                        <span class="comment-avatar">{{ profile.initial }}</span>
+                        <strong>{{ profile.username }}</strong>
+                    </div>
+                    <label>
+                        <span class="sr-only">내용</span>
+                        <textarea name="caption" rows="10" placeholder="문구를 입력하세요.">{% if is_edit %}🌸 오늘도 좋은 하루!{% endif %}</textarea>
+                    </label>
+                </div>
+
+            </form>
+        </section>
+
+        <div class="form-actions">
+            {% if is_edit %}
+                <button class="danger-button" type="button">삭제하기</button>
+            {% endif %}
+            <button type="submit" form="post-form">{{ submit_label }}</button>
+        </div>
+    </main>
+</div>
+{% endblock %}
