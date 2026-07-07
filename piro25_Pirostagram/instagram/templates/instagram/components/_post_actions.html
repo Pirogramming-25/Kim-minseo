@@ -1,6 +1,6 @@
 <section class="post-actions" aria-label="게시글 동작">
     <div class="left-actions">
-        <button class="icon-button like-button" type="button" aria-label="좋아요" data-like-count="{{ post.likes }}">
+        <button class="icon-button like-button{% if post.liked_by_me %} is-liked{% endif %}" type="button" aria-label="좋아요" data-like-count="{{ post.likes }}" data-like-url="{% url 'instagram:post_like' post.id %}">
             <svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.4 5.4 0 0 0-7.6 0L12 5.8l-1.2-1.2a5.4 5.4 0 0 0-7.6 7.6l1.2 1.2L12 21l7.6-7.6 1.2-1.2a5.4 5.4 0 0 0 0-7.6z"></path></svg>
         </button>
         <button class="icon-button" type="button" aria-label="댓글">
@@ -10,7 +10,7 @@
             <svg viewBox="0 0 24 24"><path d="M22 2 11 13"></path><path d="m22 2-7 20-4-9-9-4z"></path></svg>
         </button>
     </div>
-    <button class="icon-button save-button" type="button" aria-label="저장">
+    <button class="icon-button save-button{% if post.saved_by_me %} is-saved{% endif %}" type="button" aria-label="저장" data-save-url="{% url 'instagram:post_save' post.id %}">
         <svg viewBox="0 0 24 24"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"></path></svg>
     </button>
 </section>

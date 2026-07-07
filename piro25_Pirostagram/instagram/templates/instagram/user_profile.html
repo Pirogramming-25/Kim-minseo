@@ -8,7 +8,11 @@
         <section class="profile-header other-profile-header">
             <div class="profile-top">
                 <div class="profile-photo other-profile-photo" aria-label="프로필 사진">
-                    <span>{{ other_user.initial }}</span>
+                    {% if other_user.avatar_url %}
+                        <img src="{{ other_user.avatar_url }}" alt="{{ other_user.username }} 프로필 사진">
+                    {% else %}
+                        <span>{{ other_user.initial }}</span>
+                    {% endif %}
                 </div>
 
                 <div class="profile-info">
@@ -17,17 +21,19 @@
 
                     <dl class="profile-stats">
                         <div><dt>{{ other_user.post_count }}</dt><dd>게시물</dd></div>
-                        <div><dt>{{ other_user.followers }}</dt><dd>팔로워</dd></div>
+                        <div><dt data-profile-followers>{{ other_user.followers }}</dt><dd>팔로워</dd></div>
                         <div><dt>{{ other_user.following }}</dt><dd>팔로우</dd></div>
                     </dl>
                     <p>{{ other_user.bio }}</p>
                 </div>
             </div>
 
-            <button class="profile-follow-button follow-button" type="button">팔로우</button>
+            <button class="profile-follow-button follow-button{% if other_user.is_following %} is-following{% endif %}" type="button" data-follow-url="{% url 'instagram:follow_toggle' other_user.username %}">
+                {% if other_user.is_following %}팔로잉{% else %}팔로우{% endif %}
+            </button>
         </section>
 
-        <section class="other-profile-posts profile-single-post">
+        <section class="profile-post-grid other-profile-posts" aria-label="프로필 게시물">
             {% for profile_post in other_user_posts %}
                 {% include "instagram/components/_profile_post_thumbnail.html" %}
             {% endfor %}

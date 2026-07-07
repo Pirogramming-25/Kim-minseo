@@ -1,5 +1,6 @@
-<form class="comment-form">
-    <span class="comment-avatar">{{ profile.initial }}</span>
-    <input type="text" placeholder="댓글 달기..." aria-label="댓글 입력">
+<form class="comment-form" data-comment-form data-post-id="{{ post.id }}" data-action-url="{% url 'instagram:comment_create' post.id %}">
+    {% csrf_token %}
+    {% include "instagram/components/_avatar.html" with class_name="comment-avatar" initial=profile.initial color=profile.color avatar_url=profile.avatar_url %}
+    <input type="text" name="content" placeholder="댓글 달기..." aria-label="댓글 입력">
     <button type="submit">게시</button>
 </form>

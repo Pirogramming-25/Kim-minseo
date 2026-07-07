@@ -1,16 +1,16 @@
 <aside class="right-panel" aria-label="추천 유저">
-    <section class="my-profile">
-        {% include "instagram/components/_avatar.html" with class_name="side-avatar" initial=profile.initial color="#d4a5a5" %}
+    <a class="my-profile" href="{% url 'instagram:profile' %}">
+        {% include "instagram/components/_avatar.html" with class_name="side-avatar" initial=profile.initial color=profile.color avatar_url=profile.avatar_url %}
         <div class="profile-text">
             <strong>{{ profile.name }}</strong>
             <span>{{ profile.username }}</span>
         </div>
-    </section>
+    </a>
 
     <section class="suggestions">
         <div class="suggestion-title">
             <strong>회원님을 위한 추천</strong>
-            <a href="#">모두 보기</a>
+            <a href="{% url 'instagram:user_search' %}">모두 보기</a>
         </div>
 
         {% for user in suggestions %}

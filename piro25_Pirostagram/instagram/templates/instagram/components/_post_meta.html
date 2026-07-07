@@ -1,20 +1,18 @@
 <section class="post-meta">
     <strong class="like-text">좋아요 {{ post.likes_display }}개</strong>
-    <p><strong>{{ post.author }}</strong> {{ post.caption }}</p>
-    <button class="all-comments" type="button">댓글 {{ post.comments|length }}개 모두 보기</button>
+    <p><a class="post-meta-author" href="{{ post.author_url }}"><strong>{{ post.author }}</strong></a> {{ post.caption }}</p>
+    {% if post.hidden_comments %}
+        <button class="all-comments" type="button" data-show-comments>댓글 {{ post.comment_count }}개 모두 보기</button>
+    {% endif %}
     {% for comment in post.visible_comments %}
-        <div class="comment-row">
-            <p><strong>{{ comment.author }}</strong> {{ comment.content }}</p>
-            <form class="reply-form">
-                <input type="text" placeholder="{{ comment.author }}님에게 답글 달기..." aria-label="대댓글 입력">
-                <button type="submit">게시</button>
-            </form>
-            <div class="comment-tools">
-                <button type="button">답글</button>
-                <button type="button">수정</button>
-                <button type="button">삭제</button>
-            </div>
-        </div>
+        {% include "instagram/components/_comment_row.html" %}
     {% endfor %}
+    {% if post.hidden_comments %}
+        <div class="hidden-comments" hidden>
+            {% for comment in post.hidden_comments %}
+                {% include "instagram/components/_comment_row.html" %}
+            {% endfor %}
+        </div>
+    {% endif %}
     <time>{{ post.time }}</time>
 </section>

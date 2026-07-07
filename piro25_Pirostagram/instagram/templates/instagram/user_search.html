@@ -7,7 +7,11 @@
     <main class="utility-layout">
         <section class="utility-panel wide">
             <h1>Pirostagram</h1>
-            <h2>"{{ query }}"로 검색한 결과</h2>
+            {% if query %}
+                <h2>"{{ query }}"로 검색한 결과</h2>
+            {% else %}
+                <h2>유저 검색</h2>
+            {% endif %}
             <form class="search-form" action="{% url 'instagram:user_search' %}" method="get">
                 <input type="search" name="q" value="{{ query }}" placeholder="아이디 또는 이름 검색" aria-label="유저 검색어">
                 <button type="submit">검색</button>
@@ -16,6 +20,10 @@
             <div class="user-result-list">
                 {% for user in search_users %}
                     {% include "instagram/components/_user_result_card.html" %}
+                {% empty %}
+                    {% if query %}
+                        <p class="empty-search-message">검색 결과가 없습니다.</p>
+                    {% endif %}
                 {% endfor %}
             </div>
         </section>

@@ -1,8 +1,12 @@
 <div class="suggestion-row">
-    {% include "instagram/components/_avatar.html" with class_name="suggestion-avatar" initial=user.initial color=user.color %}
-    <span>
-        <strong>{{ user.username }}</strong>
-        <small>회원님을 팔로우합니다</small>
-    </span>
-    <button type="button">팔로우</button>
+    <a class="suggestion-main" href="{% url 'instagram:user_profile' user.username %}">
+        {% include "instagram/components/_avatar.html" with class_name="suggestion-avatar" initial=user.initial color=user.color avatar_url=user.avatar_url %}
+        <span class="suggestion-text">
+            <strong>{{ user.username }}</strong>
+            <small>{{ user.name }}</small>
+        </span>
+    </a>
+    <button type="button" data-follow-url="{% url 'instagram:follow_toggle' user.username %}">
+        {% if user.is_following %}팔로잉{% else %}팔로우{% endif %}
+    </button>
 </div>
