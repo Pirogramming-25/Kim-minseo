@@ -1,0 +1,35 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #fafafa;
+    color: #262626;
+}
+
+.site-header {
+    height: 64px;
+    border-bottom: 1px solid #dbdbdb;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    padding: 0 32px;
+}
+
+.brand {
+    color: #262626;
+    font-size: 24px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.container {
+    width: min(100% - 32px, 960px);
+    margin: 80px auto;
+}
+
+.intro {
+    text-align: center;
+}
