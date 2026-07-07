@@ -1,8 +1,20 @@
 {% extends "instagram/base.html" %}
 
 {% block content %}
-    <section class="intro">
-        <h1>Pirostagram</h1>
-        <p>Django 기본 세팅 완료!</p>
-    </section>
+<div class="app-shell">
+    {% include "instagram/components/_sidebar.html" %}
+
+    <main class="feed-layout">
+        <section class="feed-column" aria-label="피드">
+            {% include "instagram/components/_story_strip.html" %}
+            {% include "instagram/components/_post_sort_bar.html" %}
+
+            {% for post in posts %}
+                {% include "instagram/components/_post_card.html" %}
+            {% endfor %}
+        </section>
+
+        {% include "instagram/components/_right_panel.html" %}
+    </main>
+</div>
 {% endblock %}
