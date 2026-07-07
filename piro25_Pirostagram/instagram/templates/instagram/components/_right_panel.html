@@ -1,0 +1,22 @@
+<aside class="right-panel" aria-label="추천 유저">
+    <section class="my-profile">
+        {% include "instagram/components/_avatar.html" with class_name="side-avatar" initial=profile.initial color="#d4a5a5" %}
+        <div class="profile-text">
+            <strong>{{ profile.name }}</strong>
+            <span>{{ profile.username }}</span>
+        </div>
+    </section>
+
+    <section class="suggestions">
+        <div class="suggestion-title">
+            <strong>회원님을 위한 추천</strong>
+            <a href="#">모두 보기</a>
+        </div>
+
+        {% for user in suggestions %}
+            {% include "instagram/components/_suggested_user.html" %}
+        {% endfor %}
+    </section>
+
+    <footer class="footer-copy">© 2025 PIROSTAGRAM FROM META</footer>
+</aside>

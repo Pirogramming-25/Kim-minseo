@@ -1,0 +1,8 @@
+<div class="suggestion-row">
+    {% include "instagram/components/_avatar.html" with class_name="suggestion-avatar" initial=user.initial color=user.color %}
+    <span>
+        <strong>{{ user.username }}</strong>
+        <small>회원님을 팔로우합니다</small>
+    </span>
+    <button type="button">팔로우</button>
+</div>

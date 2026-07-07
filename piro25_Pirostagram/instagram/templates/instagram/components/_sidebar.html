@@ -1,0 +1,34 @@
+<aside class="sidebar">
+    <a class="logo" href="{% url 'instagram:index' %}">Pirostagram</a>
+
+    <nav class="side-nav" aria-label="메인 메뉴">
+        <a class="nav-item{% if active_page == 'home' %} active{% endif %}" href="{% url 'instagram:index' %}">
+            <span class="nav-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M3 10.8 12 3l9 7.8v9.7a.5.5 0 0 1-.5.5H15v-6H9v6H3.5a.5.5 0 0 1-.5-.5z"/></svg>
+            </span>
+            <span>홈</span>
+        </a>
+        <a class="nav-item{% if active_page == 'post_search' %} active{% endif %}" href="{% url 'instagram:post_search' %}">
+            <span class="nav-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+            </span>
+            <span>게시글 검색</span>
+        </a>
+        <a class="nav-item{% if active_page == 'user_search' %} active{% endif %}" href="{% url 'instagram:user_search' %}">
+            <span class="nav-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+            </span>
+            <span>유저 검색</span>
+        </a>
+        <a class="nav-item{% if active_page == 'post_create' %} active{% endif %}" href="{% url 'instagram:post_create' %}">
+            <span class="nav-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="5"/><path d="M12 8v8M8 12h8"/></svg>
+            </span>
+            <span>게시글 만들기</span>
+        </a>
+        <a class="nav-item{% if active_page == 'profile' %} active{% endif %}" href="{% url 'instagram:profile' %}">
+            <span class="profile-dot" aria-hidden="true"></span>
+            <span>프로필</span>
+        </a>
+    </nav>
+</aside>

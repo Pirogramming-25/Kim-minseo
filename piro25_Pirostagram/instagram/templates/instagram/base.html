@@ -8,12 +8,8 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
-    <header class="site-header">
-        <a class="brand" href="{% url 'instagram:index' %}">Pirostagram</a>
-    </header>
-
-    <main class="container">
-        {% block content %}{% endblock %}
-    </main>
+    {% block content %}{% endblock %}
+    {% include "instagram/components/_story_modal.html" %}
+    <script src="{% static 'js/main.js' %}"></script>
 </body>
 </html>

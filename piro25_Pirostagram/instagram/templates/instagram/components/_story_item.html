@@ -1,0 +1,9 @@
+<button class="story-item" type="button" data-story-open data-story-name="{{ story.username }}" data-story-initial="{{ story.initial }}" style="--avatar-color: {{ story.color }};">
+    <span class="story-avatar{% if story.is_self %} story-self{% endif %}" style="--avatar-color: {{ story.color }};">
+        {{ story.initial }}
+        {% if story.is_self %}
+            <span class="story-plus">+</span>
+        {% endif %}
+    </span>
+    <span class="story-name">{{ story.username }}</span>
+</button>

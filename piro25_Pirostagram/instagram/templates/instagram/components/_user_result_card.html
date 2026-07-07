@@ -1,0 +1,12 @@
+<article class="user-result-card">
+    <a class="user-result-main" href="{% url 'instagram:user_profile' user.username %}">
+        {% include "instagram/components/_avatar.html" with class_name="user-result-avatar" initial=user.initial color=user.color %}
+        <span>
+            <strong>{{ user.username }}</strong>
+            <small>{{ user.name }}</small>
+        </span>
+    </a>
+    <button class="follow-button{% if user.is_following %} is-following{% endif %}" type="button">
+        {% if user.is_following %}팔로잉{% else %}팔로우{% endif %}
+    </button>
+</article>
