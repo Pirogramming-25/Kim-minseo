@@ -1,0 +1,7 @@
+<span class="{{ class_name }}" style="--avatar-color: {{ color }};">
+    {% if avatar_url %}
+        <img src="{{ avatar_url }}" alt="프로필 사진">
+    {% else %}
+        {{ initial }}
+    {% endif %}
+</span>

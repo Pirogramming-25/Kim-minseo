@@ -1,0 +1,26 @@
+{% extends "instagram/base.html" %}
+
+{% block content %}
+<div class="app-shell">
+    {% include "instagram/components/_sidebar.html" %}
+
+    <main class="utility-layout">
+        <section class="utility-panel">
+            <h1>게시글 검색</h1>
+            <form class="search-form" action="{% url 'instagram:post_search' %}" method="get">
+                <input type="search" name="q" value="{{ query }}" placeholder="게시글 키워드 검색" aria-label="게시글 검색어">
+                <button type="submit">검색</button>
+            </form>
+            {% include "instagram/components/_post_sort_bar.html" %}
+
+            <div class="search-feed">
+                {% for post in posts %}
+                    {% if not post.preview_only %}
+                        {% include "instagram/components/_post_card.html" %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </section>
+    </main>
+</div>
+{% endblock %}

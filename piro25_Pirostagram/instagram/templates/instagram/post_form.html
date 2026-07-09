@@ -1,0 +1,70 @@
+{% extends "instagram/base.html" %}
+
+{% block content %}
+<div class="app-shell">
+    {% include "instagram/components/_sidebar.html" %}
+
+    <main class="utility-layout">
+        <section class="post-form-panel">
+            <header class="post-form-header">
+                <h1>{{ form_title }}</h1>
+            </header>
+            <form id="post-form" class="post-form" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {% if form.errors %}
+                    <div class="form-errors">
+                        {% for field, errors in form.errors.items %}
+                            {% for error in errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                <div class="post-upload-area">
+                    <div class="post-upload-preview{% if post_image_url %} has-preview-image{% endif %}" data-upload-preview>
+                        {% if post_image_url %}
+                            <img src="{{ post_image_url }}" alt="기존 게시글 사진">
+                        {% else %}
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                <path d="M21 16 16 11 5 21"></path>
+                            </svg>
+                        {% endif %}
+                        <span>사진 미리보기</span>
+                    </div>
+                    <label class="file-button">
+                        사진 선택
+                        <input type="file" name="image" accept="image/*" data-image-input>
+                    </label>
+                    <input type="hidden" name="location" value="{{ form.location.value|default_if_none:'서울' }}">
+                </div>
+
+                <div class="post-compose-area">
+                    <div class="compose-author">
+                        <span class="comment-avatar">{{ profile.initial }}</span>
+                        <strong>{{ profile.username }}</strong>
+                    </div>
+                    <label>
+                        <span class="sr-only">내용</span>
+                        <textarea name="caption" rows="10" placeholder="문구를 입력하세요.">{{ form.caption.value|default_if_none:'' }}</textarea>
+                    </label>
+                </div>
+
+            </form>
+        </section>
+
+        <div class="form-actions">
+            {% if is_edit %}
+                <button class="danger-button" type="submit" form="post-delete-form">삭제하기</button>
+            {% endif %}
+            <button type="submit" form="post-form">{{ submit_label }}</button>
+        </div>
+        {% if is_edit %}
+            <form id="post-delete-form" method="post" action="{% url 'instagram:post_delete' post_id %}">
+                {% csrf_token %}
+            </form>
+        {% endif %}
+    </main>
+</div>
+{% endblock %}

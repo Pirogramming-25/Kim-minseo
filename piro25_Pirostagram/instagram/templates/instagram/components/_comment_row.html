@@ -1,0 +1,25 @@
+<div class="comment-row" data-comment-id="{{ comment.id }}" data-edit-url="{% url 'instagram:comment_update' comment.id %}" data-delete-url="{% url 'instagram:comment_delete' comment.id %}">
+    <p><strong>{{ comment.author }}</strong> {{ comment.content }}</p>
+    {% if not is_reply %}
+        <div class="comment-replies">
+            {% for reply in comment.replies %}
+                {% include "instagram/components/_comment_row.html" with comment=reply is_reply=True %}
+            {% endfor %}
+        </div>
+        <form class="reply-form" data-comment-form data-post-id="{{ post.id }}" data-action-url="{% url 'instagram:comment_create' post.id %}">
+            {% csrf_token %}
+            <input type="hidden" name="parent_id" value="{{ comment.id }}">
+            <input type="text" name="content" placeholder="{{ comment.author }}님에게 답글 달기..." aria-label="대댓글 입력">
+            <button type="submit">게시</button>
+        </form>
+    {% endif %}
+    <div class="comment-tools">
+        {% if not is_reply %}
+            <button type="button">답글</button>
+        {% endif %}
+        {% if comment.can_edit %}
+            <button type="button">수정</button>
+            <button type="button">삭제</button>
+        {% endif %}
+    </div>
+</div>

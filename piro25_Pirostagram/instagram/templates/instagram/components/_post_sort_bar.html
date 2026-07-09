@@ -1,0 +1,11 @@
+<form class="sort-bar" method="get" data-auto-submit>
+    {% if query %}
+        <input type="hidden" name="q" value="{{ query }}">
+    {% endif %}
+    <label for="post-sort">게시글 정렬 기준:</label>
+    <select id="post-sort" name="sort">
+        {% for option in sort_options %}
+            <option value="{{ option.value }}"{% if option.value == selected_sort %} selected{% endif %}>{{ option.label }}</option>
+        {% endfor %}
+    </select>
+</form>

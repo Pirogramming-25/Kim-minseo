@@ -1,0 +1,29 @@
+<article class="post-card{% if post.preview_only %} second-post{% endif %}">
+    <header class="post-header">
+        <a class="user-line post-author-link" href="{{ post.author_url }}">
+            {% include "instagram/components/_avatar.html" with class_name="small-avatar ring" initial=post.initial color=post.avatar_color avatar_url=post.avatar_url %}
+            <span>
+                <strong>{{ post.author }}</strong>
+                <small>{{ post.location }}</small>
+            </span>
+        </a>
+        <button class="more-button" type="button" aria-label="게시글 메뉴">...</button>
+    </header>
+
+    {% include "instagram/components/_post_image.html" with preview_only=post.preview_only %}
+
+    {% if not post.preview_only %}
+        {% include "instagram/components/_post_actions.html" %}
+        {% include "instagram/components/_post_meta.html" %}
+        {% if post.can_edit %}
+            <div class="post-owner-actions">
+                <a href="{% url 'instagram:post_edit' post.id %}">수정</a>
+                <form method="post" action="{% url 'instagram:post_delete' post.id %}">
+                    {% csrf_token %}
+                    <button type="submit">삭제</button>
+                </form>
+            </div>
+        {% endif %}
+        {% include "instagram/components/_comment_form.html" %}
+    {% endif %}
+</article>

@@ -1,0 +1,12 @@
+<section class="highlight-row" aria-label="하이라이트">
+    {% for highlight in highlights %}
+        <button class="highlight-item" type="button">
+            <span class="highlight-circle{% if highlight.is_new %} highlight-new{% endif %}" {% if highlight.color %}style="--highlight-color: {{ highlight.color }};"{% endif %}>
+                {% if highlight.is_new %}
+                    +
+                {% endif %}
+            </span>
+            <span>{{ highlight.label }}</span>
+        </button>
+    {% endfor %}
+</section>

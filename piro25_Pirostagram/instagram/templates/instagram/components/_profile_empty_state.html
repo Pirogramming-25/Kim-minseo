@@ -1,0 +1,24 @@
+<section class="profile-empty">
+    <div class="empty-camera" aria-hidden="true">
+        {% if current_tab == "saved" %}
+            <svg viewBox="0 0 24 24">
+                <path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"></path>
+            </svg>
+        {% else %}
+            <svg viewBox="0 0 24 24">
+                <path d="M12 15.2a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4Z"></path>
+                <path d="M9 2 7.2 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-3.2L15 2H9Zm3 15a5 5 0 1 1 0-10 5 5 0 0 1 0 10Z"></path>
+            </svg>
+        {% endif %}
+    </div>
+
+    {% if current_tab == "saved" %}
+        <h2>저장한 게시물 없음</h2>
+        <p>마음에 드는 게시물을 저장하면<br>여기에 표시됩니다.</p>
+        <a class="empty-post-button" href="{% url 'instagram:index' %}">게시물 저장해보기</a>
+    {% else %}
+        <h2>사진 공유</h2>
+        <p>사진이나 동영상을 공유하면<br>프로필에 표시됩니다.</p>
+        <a class="empty-post-button" href="{% url 'instagram:post_create' %}">첫 번째 게시물 공유하기</a>
+    {% endif %}
+</section>

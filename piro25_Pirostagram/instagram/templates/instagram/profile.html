@@ -1,0 +1,18 @@
+{% extends "instagram/base.html" %}
+
+{% block content %}
+<div class="app-shell">
+    {% include "instagram/components/_sidebar.html" %}
+
+    <main class="profile-layout">
+        {% include "instagram/components/_profile_header.html" %}
+        {% include "instagram/components/_highlight_row.html" %}
+        {% include "instagram/components/_profile_tab_bar.html" %}
+        {% if profile_posts %}
+            {% include "instagram/components/_profile_post_grid.html" %}
+        {% else %}
+            {% include "instagram/components/_profile_empty_state.html" %}
+        {% endif %}
+    </main>
+</div>
+{% endblock %}

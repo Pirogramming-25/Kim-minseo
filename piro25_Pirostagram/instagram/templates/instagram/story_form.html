@@ -1,0 +1,46 @@
+{% extends "instagram/base.html" %}
+
+{% block content %}
+<div class="app-shell">
+    {% include "instagram/components/_sidebar.html" %}
+
+    <main class="utility-layout">
+        <section class="story-form-panel">
+            <header class="post-form-header">
+                <h1>{{ form_title }}</h1>
+            </header>
+
+            <form id="story-form" class="story-form" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {% if form.errors %}
+                    <div class="form-errors">
+                        {% for field, errors in form.errors.items %}
+                            {% for error in errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <div class="story-upload-preview post-upload-preview" data-upload-preview>
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                        <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                        <path d="M21 16 16 11 5 21"></path>
+                    </svg>
+                    <span>스토리 미리보기</span>
+                </div>
+
+                <label class="file-button">
+                    사진 선택
+                    <input type="file" name="images" accept="image/*" multiple data-image-input>
+                </label>
+            </form>
+        </section>
+
+        <div class="form-actions">
+            <button type="submit" form="story-form">{{ submit_label }}</button>
+        </div>
+    </main>
+</div>
+{% endblock %}

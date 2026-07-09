@@ -1,0 +1,11 @@
+<div class="post-image{% if preview_only %} short-preview{% endif %}" aria-label="게시글 이미지 자리">
+    {% if post.image_url %}
+        <img src="{{ post.image_url }}" alt="게시글 이미지">
+    {% elif not preview_only %}
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+            <path d="M21 16 16 11 5 21"></path>
+        </svg>
+    {% endif %}
+</div>

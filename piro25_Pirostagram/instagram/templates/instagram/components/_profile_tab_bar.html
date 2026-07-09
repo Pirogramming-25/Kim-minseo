@@ -1,0 +1,15 @@
+<nav class="profile-tab-bar" aria-label="프로필 탭">
+    <a class="profile-tab{% if current_tab != 'saved' %} active{% endif %}" href="{% url 'instagram:profile' %}" aria-label="게시물">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+            <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+            <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+            <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+        </svg>
+    </a>
+    <a class="profile-tab{% if current_tab == 'saved' %} active{% endif %}" href="{% url 'instagram:profile' %}?tab=saved" aria-label="저장한 게시물">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"></path>
+        </svg>
+    </a>
+</nav>
