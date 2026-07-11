@@ -6,11 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token }}">
     <title>Pirostagram</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=pirostagram-docker-1">
 </head>
 <body>
     {% block content %}{% endblock %}
     {% include "instagram/components/_story_modal.html" %}
-    <script src="{% static 'js/main.js' %}?v=story-global-boundary-1"></script>
+    <script src="{% static 'js/main.js' %}?v=pirostagram-docker-1"></script>
 </body>
 </html>
