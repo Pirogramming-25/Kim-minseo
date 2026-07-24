@@ -1,0 +1,124 @@
+{% extends "my_gpt/base.html" %}
+{% load static %}
+
+{% block title %}
+문서 요약 | Django GPT
+{% endblock %}
+
+{% block content %}
+<section class="feature-card">
+  <h1>문서 요약</h1>
+
+  <div class="model-info">
+    <p>
+      <strong>사용 모델:</strong>
+      sshleifer/distilbart-cnn-6-6
+    </p>
+
+    <p>
+      <strong>입력 언어:</strong>
+      영어
+    </p>
+
+    <p>
+      긴 영어 문서를 핵심 내용 중심으로 요약합니다.
+    </p>
+  </div>
+
+  <form id="summarize-form">
+    {% csrf_token %}
+
+    <div class="form-group">
+      <label for="summarize-input">
+        요약할 영어 문서
+      </label>
+
+      <textarea
+        id="summarize-input"
+        name="text"
+        rows="12"
+        maxlength="5000"
+        placeholder="Enter an English document of at least 100 characters."
+        required
+      ></textarea>
+
+      <p class="input-guide">
+        100자 이상 5,000자 이하
+      </p>
+    </div>
+
+    <button
+      id="summarize-button"
+      type="submit"
+      class="primary-button"
+    >
+      문서 요약 실행
+    </button>
+  </form>
+
+  <p
+    id="summarize-loading"
+    class="loading-message"
+    hidden
+  >
+    처리 중...
+  </p>
+
+  <div
+    id="summarize-error"
+    class="error-message"
+    hidden
+  ></div>
+
+  <section
+    id="summarize-result-section"
+    class="result-section"
+    hidden
+  >
+    <h2>요약 결과</h2>
+
+    <div id="summarize-result"></div>
+  </section>
+</section>
+
+<section class="history-card">
+  <h2>최근 실행 기록</h2>
+
+  <div id="summarize-history">
+    {% if histories %}
+      {% for history in histories %}
+        <article class="history-item">
+          <p>
+            <strong>입력:</strong>
+            {{ history.input_text|truncatechars:120 }}
+          </p>
+
+          <p>
+            <strong>요약:</strong>
+            {{ history.result_data.summary|truncatechars:180 }}
+          </p>
+
+          <p>
+            <strong>요약 비율:</strong>
+            {{ history.result_data.summary_ratio|floatformat:2 }}%
+          </p>
+
+          <time>
+            {{ history.created_at|date:"Y-m-d H:i" }}
+          </time>
+        </article>
+      {% endfor %}
+    {% else %}
+      <p class="empty-message">
+        아직 실행 기록이 없습니다.
+      </p>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script
+  src="{% static 'my_gpt/js/summarize.js' %}"
+></script>
+{% endblock %}

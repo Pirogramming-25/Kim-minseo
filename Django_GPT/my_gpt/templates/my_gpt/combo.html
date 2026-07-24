@@ -1,0 +1,134 @@
+{% extends "my_gpt/base.html" %}
+{% load static %}
+
+{% block title %}
+복합 분석 | Django GPT
+{% endblock %}
+
+{% block content %}
+<section class="feature-card">
+  <h1>AI 고객 피드백 분석 리포트</h1>
+
+  <div class="model-info">
+    <p>
+      <strong>처리 순서:</strong>
+      문서 요약 → 감정 분석 → 유해 표현 분석
+    </p>
+
+    <p>
+      <strong>입력 언어:</strong>
+      영어
+    </p>
+  </div>
+
+  <form id="combo-form">
+    {% csrf_token %}
+
+    <div class="form-group">
+      <label for="combo-input">
+        영어 고객 리뷰 또는 피드백
+      </label>
+
+      <textarea
+        id="combo-input"
+        name="text"
+        rows="14"
+        maxlength="5000"
+        placeholder="Enter an English customer review of at least 200 characters."
+        required
+      ></textarea>
+
+      <p class="input-guide">
+        200자 이상 5,000자 이하
+      </p>
+    </div>
+
+    <button
+      id="combo-button"
+      type="submit"
+      class="primary-button"
+    >
+      복합 분석 실행
+    </button>
+  </form>
+
+  <button
+    id="regenerate-button"
+    type="button"
+    class="secondary-button"
+    hidden
+  >
+    재생성
+  </button>
+
+  <p
+    id="combo-loading"
+    class="loading-message"
+    hidden
+  >
+    처리 중...
+  </p>
+
+  <div
+    id="combo-error"
+    class="error-message"
+    hidden
+  ></div>
+
+  <section
+    id="combo-result-section"
+    class="result-section"
+    hidden
+  >
+    <h2>복합 분석 결과</h2>
+
+    <div id="combo-result"></div>
+  </section>
+</section>
+
+<section class="history-card">
+  <h2>최근 실행 기록</h2>
+
+  <div id="combo-history">
+    {% if histories %}
+      {% for history in histories %}
+        <article class="history-item">
+          <p>
+            <strong>입력:</strong>
+            {{ history.input_text|truncatechars:120 }}
+          </p>
+
+          <p>
+            <strong>요약:</strong>
+            {{ history.result_data.summary|truncatechars:160 }}
+          </p>
+
+          <p>
+            <strong>감정:</strong>
+            {{ history.result_data.sentiment.label|title }}
+          </p>
+
+          <p>
+            <strong>최고 위험 레이블:</strong>
+            {{ history.result_data.toxicity.highest_label }}
+          </p>
+
+          <time>
+            {{ history.created_at|date:"Y-m-d H:i" }}
+          </time>
+        </article>
+      {% endfor %}
+    {% else %}
+      <p class="empty-message">
+        아직 실행 기록이 없습니다.
+      </p>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script
+  src="{% static 'my_gpt/js/combo.js' %}"
+></script>
+{% endblock %}

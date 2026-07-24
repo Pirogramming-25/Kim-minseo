@@ -1,0 +1,103 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+  <title>
+    {% block title %}Django GPT{% endblock %}
+  </title>
+
+  <link
+    rel="stylesheet"
+    href="{% static 'my_gpt/css/style.css' %}"
+  >
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a
+        href="{% url 'my_gpt:sentiment' %}"
+        class="logo"
+      >
+        Django GPT
+      </a>
+
+      <div class="auth-area">
+        {% if user.is_authenticated %}
+          <span class="username">
+            {{ user.username }}님
+          </span>
+
+          <form
+            method="post"
+            action="{% url 'logout' %}"
+            class="logout-form"
+          >
+            {% csrf_token %}
+            <button
+              type="submit"
+              class="auth-button"
+            >
+              로그아웃
+            </button>
+          </form>
+        {% else %}
+          <a
+            href="{% url 'login' %}"
+            class="auth-button"
+          >
+            로그인
+          </a>
+        {% endif %}
+      </div>
+    </div>
+
+    <nav class="tab-nav">
+      <a
+        href="{% url 'my_gpt:sentiment' %}"
+        class="nav-link {% if active_tab == 'sentiment' %}active{% endif %}"
+      >
+        감정 분석
+      </a>
+
+      <a
+        href="{% url 'my_gpt:summarize' %}"
+        class="nav-link {% if active_tab == 'summarize' %}active{% endif %}"
+      >
+        문서 요약
+      </a>
+
+      <a
+        href="{% url 'my_gpt:moderate' %}"
+        class="nav-link {% if active_tab == 'moderate' %}active{% endif %}"
+      >
+        유해 표현 분석
+      </a>
+
+      <a
+        href="{% url 'my_gpt:combo' %}"
+        class="nav-link {% if active_tab == 'combo' %}active{% endif %}"
+      >
+        복합 분석
+      </a>
+    </nav>
+  </header>
+
+  <main class="page-container">
+    {% block content %}
+    {% endblock %}
+  </main>
+
+  <script
+    src="{% static 'my_gpt/js/common.js' %}"
+  ></script>
+
+  {% block scripts %}
+  {% endblock %}
+</body>
+</html>
