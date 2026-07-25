@@ -1,35 +1,61 @@
 from django.db import models
 from django.utils import timezone
+
 from apps.users.models import User
 
 
 class Post(models.Model):
-    title = models.CharField('제목', max_length=20)
-    content = models.CharField('내용', max_length=20)
-    region = models.CharField('지역', max_length=20)
+    title = models.CharField(
+        "제목",
+        max_length=20,
+    )
+
+    content = models.CharField(
+        "내용",
+        max_length=20,
+    )
+
+    region = models.CharField(
+        "지역",
+        max_length=20,
+    )
+
     user = models.ForeignKey(
         User,
-        verbose_name='작성자',
+        verbose_name="작성자",
         on_delete=models.CASCADE,
     )
-    price = models.IntegerField('가격', default=1000)
-    created_at = models.DateTimeField('작성일', auto_now_add=True)
-    updated_at = models.DateTimeField('수정일', null=True, blank=True)
+
+    price = models.IntegerField(
+        "가격",
+        default=1000,
+    )
+
+    created_at = models.DateTimeField(
+        "작성일",
+        auto_now_add=True,
+    )
+
+    updated_at = models.DateTimeField(
+        "수정일",
+        null=True,
+        blank=True,
+    )
 
     photo = models.ImageField(
-        '이미지',
+        "이미지",
         blank=True,
-        upload_to='posts/%Y%m%d',
+        upload_to="posts/%Y%m%d",
     )
 
     nutrition_image = models.ImageField(
-        '영양성분표 이미지',
+        "영양성분표 이미지",
         blank=True,
-        upload_to='nutrition/%Y%m%d',
+        upload_to="nutrition/%Y%m%d",
     )
 
     calories = models.DecimalField(
-        '칼로리(kcal)',
+        "칼로리(kcal)",
         max_digits=8,
         decimal_places=2,
         null=True,
@@ -37,7 +63,7 @@ class Post(models.Model):
     )
 
     carbohydrate = models.DecimalField(
-        '탄수화물(g)',
+        "탄수화물(g)",
         max_digits=8,
         decimal_places=2,
         null=True,
@@ -45,7 +71,7 @@ class Post(models.Model):
     )
 
     protein = models.DecimalField(
-        '단백질(g)',
+        "단백질(g)",
         max_digits=8,
         decimal_places=2,
         null=True,
@@ -53,14 +79,32 @@ class Post(models.Model):
     )
 
     fat = models.DecimalField(
-        '지방(g)',
+        "지방(g)",
         max_digits=8,
         decimal_places=2,
         null=True,
         blank=True,
     )
 
+    hashtags = models.CharField(
+        "해시태그",
+        max_length=300,
+        blank=True,
+    )
+
+    @property
+    def hashtag_list(self):
+        if not self.hashtags:
+            return []
+
+        return [
+            tag.strip().lstrip("#")
+            for tag in self.hashtags.split()
+            if tag.strip()
+        ]
+
     def save(self, *args, **kwargs):
         if self.pk:
             self.updated_at = timezone.now()
+
         super().save(*args, **kwargs)

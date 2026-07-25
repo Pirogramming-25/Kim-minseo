@@ -1,35 +1,83 @@
-@import "./nomalize.css";
+@import "./normalize.css";
+
+html {
+    min-height: 100%;
+}
 
 body {
-    justify-content: center;
-    display: grid;
-    grid-template-rows: 1fr auto;
-    background-color: #ddd;
-    height: 100vh;
+    min-height: 100vh;
+    margin: 0;
+    background-color: #fffaf4;
+    color: #303630;
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        "Noto Sans KR",
+        sans-serif;
 }
 
-main {
-    background-color: #fff;
-    width: 768px;
-    padding: 1rem;
+.site-wrapper {
+    width: 100%;
+    min-height: 100vh;
+    box-sizing: border-box;
+    padding: 20px;
+    background-color: transparent;
 }
 
-footer {
+.site-header {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 12px 0 20px;
+}
+
+#logo {
     display: flex;
-    justify-content: right;
-    background-color: #fff;
-    padding-right: 10px;
-    padding-bottom: 10px;
+    justify-content: center;
+    color: #303630;
+    text-decoration: none;
+}
+
+#logo h1 {
+    margin: 20px 0;
+    font-size: clamp(28px, 4vw, 38px);
+    font-weight: 800;
+    letter-spacing: -1.2px;
+    line-height: 1.2;
+    text-align: center;
+}
+
+#logo:hover {
+    color: #303630;
+}
+
+.site-navigation {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.header-divider {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto 24px;
+}
+
+.page-content {
+    width: 100%;
+    min-height: calc(100vh - 180px);
 }
 
 .search-box {
     display: grid;
-    grid-template-columns: 1fr 0.15fr;
+    grid-template-columns: 1fr auto;
+    gap: 12px;
 }
 
-.search-box>form {
+.search-box > form {
     display: flex;
-
 }
 
 .content-wrapper {
@@ -43,10 +91,7 @@ footer {
 }
 
 img {
-    width: 200px;
-    height: 200px;
-    border-radius: 10px;
-    object-fit: cover;
+    max-width: 100%;
 }
 
 .info {
@@ -60,18 +105,9 @@ img {
 }
 
 .title {
+    padding-bottom: 5px;
     font-size: 1.5rem;
     text-decoration: none;
-    padding-bottom: 5px;
-}
-
-#logo h1 {
-    margin: 20px 0;
-}
-
-#logo {
-    display: flex;
-    justify-content: center;
 }
 
 .form-control {
@@ -80,4 +116,31 @@ img {
 
 .related-post {
     margin-bottom: 10px;
+}
+
+@media (max-width: 768px) {
+    .site-wrapper {
+        padding: 14px;
+    }
+
+    .site-navigation {
+        flex-wrap: wrap;
+    }
+
+    .search-box {
+        grid-template-columns: 1fr;
+    }
+
+    .search-box > form {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .form-control {
+        margin-right: 0;
+    }
+
+    .item {
+        flex-direction: column;
+    }
 }

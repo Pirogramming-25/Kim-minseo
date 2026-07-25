@@ -14,4 +14,9 @@ urlpatterns = [
         analyze_nutrition,
         name="analyze_nutrition",
     ),
+    path(
+    "analyze-hashtags",
+    analyze_hashtags,
+    name="analyze_hashtags",
+    ),
 ]

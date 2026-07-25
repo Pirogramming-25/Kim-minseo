@@ -1,56 +1,155 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block head %}
-<title>상품 등록</title>
-<style>
-    main {
-        min-height: 100vh;
-        padding: 40px;
-    }
+<title>상품 등록 | 사과마켓</title>
 
-    .post-form {
-        max-width: 720px;
-        margin: 0 auto;
-    }
-
-    #ocr-status {
-        display: none;
-        margin: 12px 0;
-        font-weight: bold;
-    }
-</style>
+<link
+    rel="stylesheet"
+    href="{% static 'posts/css/form.css' %}"
+>
 {% endblock %}
 
 {% block content %}
-<form
-    class="post-form"
-    action="{% url 'posts:create' %}"
-    method="POST"
-    enctype="multipart/form-data"
+<a
+    class="top-back-link"
+    href="{% url 'posts:main' %}"
 >
-    {% csrf_token %}
-    {{ form.as_p }}
+    ← 목록으로 돌아가기
+</a>
+<div class="form-container">
+    <header class="page-header">
+        <div class="page-header__icon">🍎</div>
 
-    <p id="ocr-status"></p>
+        <h1>새 상품 등록</h1>
 
-    <button class="btn btn-success" type="submit">
-        등록하기
-    </button>
-</form>
+        <p>
+            상품 사진과 정보를 입력하고 판매를 시작해보세요.
+        </p>
+    </header>
+
+    <form
+        class="post-form"
+        action="{% url 'posts:create' %}"
+        method="POST"
+        enctype="multipart/form-data"
+    >
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <p
+            id="hashtag-status"
+            class="analysis-status"
+            aria-live="polite"
+        ></p>
+
+        <p
+            id="ocr-status"
+            class="analysis-status"
+            aria-live="polite"
+        ></p>
+
+        <button
+            class="form-button"
+            type="submit"
+        >
+            상품 등록하기
+        </button>
+    </form>
+
+</div>
 
 <script>
+    const csrfToken = document.querySelector(
+        "[name=csrfmiddlewaretoken]"
+    ).value;
+
+    const photoInput =
+        document.getElementById("id_photo");
+
+    const hashtagInput =
+        document.getElementById("id_hashtags");
+
+    const hashtagStatus =
+        document.getElementById("hashtag-status");
+
     const nutritionInput =
         document.getElementById("id_nutrition_image");
 
-    const statusElement =
+    const ocrStatus =
         document.getElementById("ocr-status");
 
-    function setStatus(message, isError = false) {
-        statusElement.style.display = "block";
-        statusElement.textContent = message;
+    function setStatus(
+        element,
+        message,
+        isError = false
+    ) {
+        if (!element) {
+            return;
+        }
 
-        statusElement.className =
-            isError ? "text-danger" : "text-success";
+        element.style.display = "block";
+        element.textContent = message;
+
+        element.className = isError
+            ? "analysis-status text-danger"
+            : "analysis-status text-success";
+    }
+
+    async function analyzeProductImage(file) {
+        const formData = new FormData();
+        formData.append("photo", file);
+
+        setStatus(
+            hashtagStatus,
+            "상품 이미지를 분석해 해시태그를 생성하는 중…"
+        );
+
+        try {
+            const response = await fetch(
+                "{% url 'posts:analyze_hashtags' %}",
+                {
+                    method: "POST",
+                    headers: {
+                        "X-CSRFToken": csrfToken,
+                    },
+                    body: formData,
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(
+                    data.error ||
+                    "해시태그 분석에 실패했습니다."
+                );
+            }
+
+            if (hashtagInput) {
+                hashtagInput.value =
+                    data.hashtag_text || "";
+            }
+
+            if (data.hashtag_text) {
+                setStatus(
+                    hashtagStatus,
+                    "해시태그 생성 완료! 필요하면 직접 수정해주세요."
+                );
+            } else {
+                setStatus(
+                    hashtagStatus,
+                    "인식된 상품이 없습니다. 해시태그를 직접 입력해주세요.",
+                    true
+                );
+            }
+        } catch (error) {
+            setStatus(
+                hashtagStatus,
+                error.message,
+                true
+            );
+        }
     }
 
     async function analyzeNutritionImage(file) {
@@ -61,7 +160,10 @@
             file
         );
 
-        setStatus("분석 중…");
+        setStatus(
+            ocrStatus,
+            "영양성분 분석 중…"
+        );
 
         try {
             const response = await fetch(
@@ -69,10 +171,7 @@
                 {
                     method: "POST",
                     headers: {
-                        "X-CSRFToken":
-                            document.querySelector(
-                                "[name=csrfmiddlewaretoken]"
-                            ).value,
+                        "X-CSRFToken": csrfToken,
                     },
                     body: formData,
                 }
@@ -87,33 +186,69 @@
                 );
             }
 
-            document.getElementById(
-                "id_calories"
-            ).value = data.calories || "";
+            const caloriesInput =
+                document.getElementById("id_calories");
 
-            document.getElementById(
-                "id_carbohydrate"
-            ).value = data.carbohydrate || "";
+            const carbohydrateInput =
+                document.getElementById("id_carbohydrate");
 
-            document.getElementById(
-                "id_protein"
-            ).value = data.protein || "";
+            const proteinInput =
+                document.getElementById("id_protein");
 
-            document.getElementById(
-                "id_fat"
-            ).value = data.fat || "";
+            const fatInput =
+                document.getElementById("id_fat");
+
+            if (caloriesInput) {
+                caloriesInput.value =
+                    data.calories || "";
+            }
+
+            if (carbohydrateInput) {
+                carbohydrateInput.value =
+                    data.carbohydrate || "";
+            }
+
+            if (proteinInput) {
+                proteinInput.value =
+                    data.protein || "";
+            }
+
+            if (fatInput) {
+                fatInput.value =
+                    data.fat || "";
+            }
 
             if (data.warning) {
-                setStatus(data.warning, true);
+                setStatus(
+                    ocrStatus,
+                    data.warning,
+                    true
+                );
             } else {
                 setStatus(
-                    "분석 완료! 값을 확인하고 필요하면 수정해주세요."
+                    ocrStatus,
+                    "영양성분 분석 완료! 값을 확인하고 필요하면 수정해주세요."
                 );
             }
         } catch (error) {
-            setStatus(error.message, true);
+            setStatus(
+                ocrStatus,
+                error.message,
+                true
+            );
         }
     }
+
+    photoInput?.addEventListener(
+        "change",
+        function (event) {
+            const file = event.target.files[0];
+
+            if (file) {
+                analyzeProductImage(file);
+            }
+        }
+    );
 
     nutritionInput?.addEventListener(
         "change",

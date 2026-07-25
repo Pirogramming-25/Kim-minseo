@@ -353,4 +353,6 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-# End of https://www.toptal.com/developers/gitignore/api/macos,windows,python,django,venv,visualstudiocode
+# End of https://www.toptal.com/developers/gitignore/api/macos,windows,python,django,venv,visualstudiocodeyolo11n.pt
+
+/yolo11n.pt
