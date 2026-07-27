@@ -1,0 +1,216 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+<title>{{ post.title }} | 사과마켓</title>
+
+<link
+    rel="stylesheet"
+    href="{% static 'posts/css/detail.css' %}"
+>
+{% endblock %}
+
+{% block content %}
+<a
+    class="top-back-link"
+    href="{% url 'posts:main' %}"
+>
+    ← 목록으로 돌아가기
+</a>
+<div class="detail-container">
+    <article class="detail-card">
+        <div class="product-image-wrapper">
+            {% if post.photo %}
+                <img
+                    class="product-image"
+                    src="{{ post.photo.url }}"
+                    alt="{{ post.title }} 상품 이미지"
+                >
+            {% else %}
+                <img
+                    class="product-image"
+                    src="{% static 'posts/image/no-image.jpg' %}"
+                    alt="등록된 상품 이미지 없음"
+                >
+            {% endif %}
+        </div>
+
+        <div class="detail-body">
+            <header class="product-heading">
+                <div>
+                    <h1 class="product-title">
+                        {{ post.title }}
+                    </h1>
+
+                    <p class="product-region">
+                        📍 {{ post.region }}
+                    </p>
+                </div>
+
+                <p class="product-price">
+                    {{ post.price }}원
+                </p>
+            </header>
+
+            <section class="content-card">
+                <h2 class="section-title">
+                    📝 상품 설명
+                </h2>
+
+                <p class="product-content">
+                    {{ post.content }}
+                </p>
+            </section>
+
+            <section class="info-card">
+                <h2 class="section-title">
+                    👤 상품 정보
+                </h2>
+
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">
+                            작성자
+                        </span>
+
+                        <span class="info-value">
+                            {{ post.user }}
+                        </span>
+                    </div>
+
+                    <div class="info-item">
+                        <span class="info-label">
+                            지역
+                        </span>
+
+                        <span class="info-value">
+                            {{ post.region }}
+                        </span>
+                    </div>
+
+                    <div class="info-item">
+                        <span class="info-label">
+                            작성일
+                        </span>
+
+                        <span class="info-value">
+                            {{ post.created_at }}
+                        </span>
+                    </div>
+
+                    <div class="info-item">
+                        <span class="info-label">
+                            수정일
+                        </span>
+
+                        <span class="info-value">
+                            {{ post.updated_at|default_if_none:"수정되지 않음" }}
+                        </span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="hashtag-section">
+                <h2 class="section-title">
+                    #️⃣ 상품 해시태그
+                </h2>
+
+                {% if post.hashtag_list %}
+                    <div class="hashtag-list">
+                        {% for tag in post.hashtag_list %}
+                            <a
+                                class="hashtag"
+                                href="{% url 'posts:main' %}?hashtag={{ tag|urlencode }}"
+                            >
+                                #{{ tag }}
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="empty-text">
+                        등록된 해시태그가 없습니다.
+                    </p>
+                {% endif %}
+            </section>
+
+            <section class="nutrition-section">
+                <h2 class="section-title">
+                    🥗 영양성분 정보
+                </h2>
+
+                <div class="nutrition-layout">
+                    {% if post.nutrition_image %}
+                        <img
+                            class="nutrition-image"
+                            src="{{ post.nutrition_image.url }}"
+                            alt="{{ post.title }} 영양성분표 이미지"
+                        >
+                    {% endif %}
+
+                    <div class="nutrition-grid">
+                        <div class="nutrition-item">
+                            <span class="nutrition-name">
+                                칼로리
+                            </span>
+
+                            <strong class="nutrition-value">
+                                {{ post.calories|default_if_none:"-" }}
+                                kcal
+                            </strong>
+                        </div>
+
+                        <div class="nutrition-item">
+                            <span class="nutrition-name">
+                                탄수화물
+                            </span>
+
+                            <strong class="nutrition-value">
+                                {{ post.carbohydrate|default_if_none:"-" }}
+                                g
+                            </strong>
+                        </div>
+
+                        <div class="nutrition-item">
+                            <span class="nutrition-name">
+                                단백질
+                            </span>
+
+                            <strong class="nutrition-value">
+                                {{ post.protein|default_if_none:"-" }}
+                                g
+                            </strong>
+                        </div>
+
+                        <div class="nutrition-item">
+                            <span class="nutrition-name">
+                                지방
+                            </span>
+
+                            <strong class="nutrition-value">
+                                {{ post.fat|default_if_none:"-" }}
+                                g
+                            </strong>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="button-area">
+                <a
+                    class="detail-button update-button"
+                    href="{% url 'posts:update' post.pk %}"
+                >
+                    수정하기
+                </a>
+
+                <a
+                    class="detail-button delete-button"
+                    href="{% url 'posts:delete' post.pk %}"
+                >
+                    삭제하기
+                </a>
+            </div>
+        </div>
+    </article>
+</div>
+{% endblock %}

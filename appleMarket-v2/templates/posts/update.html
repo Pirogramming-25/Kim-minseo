@@ -1,0 +1,264 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+<title>상품 수정 | 사과마켓</title>
+
+<link
+    rel="stylesheet"
+    href="{% static 'posts/css/form.css' %}"
+>
+{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <header class="page-header">
+        <div class="page-header__icon">✏️</div>
+
+        <h1>상품 정보 수정</h1>
+
+        <p>
+            상품 정보를 확인하고 필요한 내용을 수정해주세요.
+        </p>
+    </header>
+
+    <form
+        class="post-form"
+        action="{% url 'posts:update' post.pk %}"
+        method="POST"
+        enctype="multipart/form-data"
+    >
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <p
+            id="hashtag-status"
+            class="analysis-status"
+            aria-live="polite"
+        ></p>
+
+        <p
+            id="ocr-status"
+            class="analysis-status"
+            aria-live="polite"
+        ></p>
+
+        <button
+            class="form-button"
+            type="submit"
+        >
+            수정 내용 저장하기
+        </button>
+    </form>
+
+    <a
+        class="back-link"
+        href="{% url 'posts:detail' post.pk %}"
+    >
+        ← 상품 상세 페이지로 돌아가기
+    </a>
+</div>
+
+<script>
+    const csrfToken = document.querySelector(
+        "[name=csrfmiddlewaretoken]"
+    ).value;
+
+    const photoInput =
+        document.getElementById("id_photo");
+
+    const hashtagInput =
+        document.getElementById("id_hashtags");
+
+    const hashtagStatus =
+        document.getElementById("hashtag-status");
+
+    const nutritionInput =
+        document.getElementById("id_nutrition_image");
+
+    const ocrStatus =
+        document.getElementById("ocr-status");
+
+    function setStatus(
+        element,
+        message,
+        isError = false
+    ) {
+        if (!element) {
+            return;
+        }
+
+        element.style.display = "block";
+        element.textContent = message;
+
+        element.className = isError
+            ? "analysis-status text-danger"
+            : "analysis-status text-success";
+    }
+
+    async function analyzeProductImage(file) {
+        const formData = new FormData();
+        formData.append("photo", file);
+
+        setStatus(
+            hashtagStatus,
+            "새 상품 이미지를 분석해 해시태그를 생성하는 중…"
+        );
+
+        try {
+            const response = await fetch(
+                "{% url 'posts:analyze_hashtags' %}",
+                {
+                    method: "POST",
+                    headers: {
+                        "X-CSRFToken": csrfToken,
+                    },
+                    body: formData,
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(
+                    data.error ||
+                    "해시태그 분석에 실패했습니다."
+                );
+            }
+
+            if (hashtagInput) {
+                hashtagInput.value =
+                    data.hashtag_text || "";
+            }
+
+            if (data.hashtag_text) {
+                setStatus(
+                    hashtagStatus,
+                    "해시태그 재생성 완료! 필요하면 직접 수정해주세요."
+                );
+            } else {
+                setStatus(
+                    hashtagStatus,
+                    "인식된 상품이 없습니다. 기존 해시태그를 확인해주세요.",
+                    true
+                );
+            }
+        } catch (error) {
+            setStatus(
+                hashtagStatus,
+                error.message,
+                true
+            );
+        }
+    }
+
+    async function analyzeNutritionImage(file) {
+        const formData = new FormData();
+
+        formData.append(
+            "nutrition_image",
+            file
+        );
+
+        setStatus(
+            ocrStatus,
+            "영양성분 분석 중…"
+        );
+
+        try {
+            const response = await fetch(
+                "{% url 'posts:analyze_nutrition' %}",
+                {
+                    method: "POST",
+                    headers: {
+                        "X-CSRFToken": csrfToken,
+                    },
+                    body: formData,
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(
+                    data.error ||
+                    "영양성분 분석에 실패했습니다."
+                );
+            }
+
+            const caloriesInput =
+                document.getElementById("id_calories");
+
+            const carbohydrateInput =
+                document.getElementById("id_carbohydrate");
+
+            const proteinInput =
+                document.getElementById("id_protein");
+
+            const fatInput =
+                document.getElementById("id_fat");
+
+            if (caloriesInput) {
+                caloriesInput.value =
+                    data.calories || "";
+            }
+
+            if (carbohydrateInput) {
+                carbohydrateInput.value =
+                    data.carbohydrate || "";
+            }
+
+            if (proteinInput) {
+                proteinInput.value =
+                    data.protein || "";
+            }
+
+            if (fatInput) {
+                fatInput.value =
+                    data.fat || "";
+            }
+
+            if (data.warning) {
+                setStatus(
+                    ocrStatus,
+                    data.warning,
+                    true
+                );
+            } else {
+                setStatus(
+                    ocrStatus,
+                    "영양성분 분석 완료! 값을 확인하고 필요하면 수정해주세요."
+                );
+            }
+        } catch (error) {
+            setStatus(
+                ocrStatus,
+                error.message,
+                true
+            );
+        }
+    }
+
+    photoInput?.addEventListener(
+        "change",
+        function (event) {
+            const file = event.target.files[0];
+
+            if (file) {
+                analyzeProductImage(file);
+            }
+        }
+    );
+
+    nutritionInput?.addEventListener(
+        "change",
+        function (event) {
+            const file = event.target.files[0];
+
+            if (file) {
+                analyzeNutritionImage(file);
+            }
+        }
+    );
+</script>
+{% endblock %}
